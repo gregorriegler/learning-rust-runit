@@ -24,6 +24,7 @@ fn test_outcome(failures: Vec<&str>) {
         }
         test_failure();
     }
+    println!("Test Success!");
 }
 
 fn test_failure() -> ! {
