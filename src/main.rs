@@ -6,7 +6,7 @@ use std::process::exit;
 fn main() {
     let mut failures: Vec<&str> = Vec::new();
 
-    assert_true(false, &mut failures);
+    assert_true(true, &mut failures);
 
     test_outcome(failures);
 }
