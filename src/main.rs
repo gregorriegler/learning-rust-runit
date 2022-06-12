@@ -10,7 +10,11 @@ fn main() {
 fn assert_true(value: bool) {
     if value != true {
         println!("Value not true");
-        println!("Test Failure!");
-        exit(1)
+        test_failure();
     }
+}
+
+fn test_failure() -> ! {
+    println!("Test Failure!");
+    exit(1)
 }
