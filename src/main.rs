@@ -4,13 +4,21 @@
 use std::process::exit;
 
 fn main() {
-    assert_true(false);
+    let mut failures: Vec<&str> = Vec::new();
+
+    assert_true(false, &mut failures);
+
+    if !failures.is_empty() {
+        for failure in &failures {
+            println!("{}", failure)
+        }
+        test_failure();
+    }
 }
 
-fn assert_true(value: bool) {
+fn assert_true(value: bool, failures: &mut Vec<&str>) {
     if value != true {
-        println!("Value not true");
-        test_failure();
+        failures.push("Value not true");
     }
 }
 
