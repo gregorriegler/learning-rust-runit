@@ -8,17 +8,21 @@ fn main() {
 
     assert_true(false, &mut failures);
 
-    if !failures.is_empty() {
-        for failure in &failures {
-            println!("{}", failure)
-        }
-        test_failure();
-    }
+    test_outcome(failures);
 }
 
 fn assert_true(value: bool, failures: &mut Vec<&str>) {
     if value != true {
         failures.push("Value not true");
+    }
+}
+
+fn test_outcome(failures: Vec<&str>) {
+    if !failures.is_empty() {
+        for failure in &failures {
+            println!("{}", failure)
+        }
+        test_failure();
     }
 }
 
