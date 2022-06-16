@@ -9,12 +9,12 @@ type TestCaseRun = (&'static str, std::thread::Result<()>);
 fn main() {
     let mut results: Vec<TestCaseRun> = Vec::new();
 
-    add_test("first test", first_test, &mut results);
+    run_test("first test", first_test, &mut results);
 
     verify(results);
 }
 
-fn add_test(name_of_test: &'static str, test_fn: fn(), results: &mut Vec<TestCaseRun>) {
+fn run_test(name_of_test: &'static str, test_fn: fn(), results: &mut Vec<TestCaseRun>) {
     let test_1_result = panic::catch_unwind(|| {
         test_fn();
     });
