@@ -7,16 +7,24 @@ use std::process::exit;
 fn main() {
     let mut results: Vec<std::thread::Result<()>> = Vec::new();
 
-    let test_1_result = panic::catch_unwind(|| {
-        test_function();
-    });
+    add_test(first_test, &mut results);
 
-    results.push(test_1_result);
-
-    test_outcome(results);
+    verify(results);
 }
 
-fn test_outcome(results: Vec<std::thread::Result<()>>) {
+fn add_test(test_fn: fn(), results: &mut Vec<std::thread::Result<()>>) {
+    let test_1_result = panic::catch_unwind(|| {
+        test_fn();
+    });
+    results.push(test_1_result);
+}
+
+fn first_test() {
+    assert_true(true);
+    assert_true(false);
+}
+
+fn verify(results: Vec<std::thread::Result<()>>) {
     if !results.is_empty() {
         println!("Test Results:");
         let mut failure: bool = false;
@@ -34,10 +42,6 @@ fn test_outcome(results: Vec<std::thread::Result<()>>) {
     println!("Test Success!");
 }
 
-fn test_function() {
-    assert_true(true);
-    assert_true(false);
-}
 
 fn assert_true(value: bool) {
     assert_equals(value, true);
