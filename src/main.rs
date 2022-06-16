@@ -5,17 +5,27 @@ use std::panic;
 use std::process::exit;
 
 fn main() {
-    let mut failures: Vec<String> = Vec::new();
-    let result = panic::catch_unwind(|| {
+    let mut results: Vec<std::thread::Result<()>> = Vec::new();
+    let test_1_result = panic::catch_unwind(|| {
         test_function();
     });
 
-    match result {
-        Ok(ok) => ok,
-        Err(err) => failures.push(format!("test failed with because: {:?}", err)) // TODO prints Any { .. }
-    }
+    results.push(test_1_result);
 
-    test_outcome(failures)
+    if !results.is_empty() {
+        println!("Test Results:");
+        let mut failure: bool = false;
+        for res in &results {
+            println!("{:?}", res); // todo prints Any { .. }
+            if res.is_err() {
+                failure = true;
+            }
+        }
+        if failure {
+            test_failure();
+        }
+    }
+    println!("Test Success!");
 }
 
 fn test_function() {
@@ -31,16 +41,6 @@ fn assert_equals(actual: bool, expected: bool) {
     if actual != expected {
         panic!("{}", format!("Expected '{}' but got '{}'", expected, actual))
     }
-}
-
-fn test_outcome(failures: Vec<String>) {
-    if !failures.is_empty() {
-        for failure in &failures {
-            println!("{}", failure)
-        }
-        test_failure();
-    }
-    println!("Test Success!");
 }
 
 fn test_failure() -> ! {
