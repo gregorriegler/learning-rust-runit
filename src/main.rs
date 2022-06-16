@@ -30,9 +30,19 @@ fn verify(results: Vec<std::thread::Result<()>>) {
         let mut failure: bool = false;
         for res in &results {
             // todo print testname
-            println!("{:?}", res); // todo prints Any { .. }
-            if res.is_err() {
-                failure = true;
+            match res {
+                Ok(_) => {
+                    println!("Test Ok");
+                }
+                Err(e) => {
+                    let msg = if let Some(msg) = e.downcast_ref::<String>() {
+                        msg.clone()
+                    } else {
+                        format!("?{:?}", e)
+                    };
+                    println!("{}", msg);
+                    failure = true
+                }
             }
         }
         if failure {
