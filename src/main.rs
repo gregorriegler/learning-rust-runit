@@ -27,30 +27,32 @@ fn add_test(name_of_test: &'static str, test_fn: fn(), results: &mut Vec<TestCas
 }
 
 fn run(tests: Vec<TestCase>) {
-    if !tests.is_empty() {
-        println!("Test Results:");
+    if tests.is_empty() {
+        println!("No Tests to run");
+        return;
+    }
+    println!("Test Results:");
 
-        let mut success: bool = true;
+    let mut success: bool = true;
 
-        for test in &tests {
-            let (test_name, test_fn) = test;
+    for test in &tests {
+        let (test_name, test_fn) = test;
 
-            match panic::catch_unwind(|| { test_fn(); }) {
-                Ok(_) => println!("{} successful", test_name),
-                Err(e) => {
-                    let msg = if let Some(msg) = e.downcast_ref::<String>() {
-                        msg.clone()
-                    } else {
-                        format!("?{:?}", e)
-                    };
-                    println!("{} failed with reason: {}", test_name, msg);
-                    success = false
-                }
+        match panic::catch_unwind(|| { test_fn(); }) {
+            Ok(_) => println!("{} successful", test_name),
+            Err(e) => {
+                let msg = if let Some(msg) = e.downcast_ref::<String>() {
+                    msg.clone()
+                } else {
+                    format!("?{:?}", e)
+                };
+                println!("{} failed with reason: {}", test_name, msg);
+                success = false
             }
         }
-
-        successOrFailure(success)
     }
+
+    successOrFailure(success)
 }
 
 fn successOrFailure(success: bool) {
