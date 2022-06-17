@@ -1,3 +1,6 @@
+use runit::assert_true;
+use runit::TestSuite;
+
 mod runit {
     use std::panic;
     use std::process::exit;
@@ -74,14 +77,10 @@ mod runit {
     }
 }
 
-use runit::TestSuite;
-use runit::assert_true;
-use runit::TestCase;
-
 fn main() {
     TestSuite::of(&[
         ("successful test", successful_test),
-        ("failing test", failing_test),
+        ("failing test2", || assert_true(false)),
     ]).run();
 }
 
@@ -89,9 +88,5 @@ fn successful_test() {
     assert_true(true);
 }
 
-fn failing_test() {
-    assert_true(true);
-    assert_true(false);
-}
 
 
