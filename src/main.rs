@@ -52,10 +52,10 @@ fn run(tests: Vec<TestCase>) {
         }
     }
 
-    successOrFailure(success)
+    success_or_failure(success)
 }
 
-fn successOrFailure(success: bool) {
+fn success_or_failure(success: bool) {
     if !success {
         println!("Test Failure!");
         exit(1)
