@@ -38,7 +38,7 @@ fn run(tests: Vec<TestCase>) {
     for test in &tests {
         let (test_name, test_fn) = test;
 
-        match panic::catch_unwind(|| { test_fn(); }) {
+        match panic::catch_unwind(|| test_fn()) {
             Ok(_) => println!("{} successful", test_name),
             Err(e) => {
                 let msg = if let Some(msg) = e.downcast_ref::<String>() {
