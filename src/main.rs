@@ -15,9 +15,9 @@ mod runit {
             }
         }
 
-        pub fn of(tests: Vec<TestCase>) -> TestSuite {
+        pub fn of(given_tests: &[TestCase]) -> TestSuite {
             TestSuite {
-                tests
+                tests: given_tests.to_vec()
             }
         }
 
@@ -79,7 +79,7 @@ use runit::assert_true;
 use runit::TestCase;
 
 fn main() {
-    TestSuite::of(vec![
+    TestSuite::of(&[
         ("successful test", successful_test),
         ("failing test", failing_test),
     ]).run();
