@@ -2,16 +2,22 @@ mod runit {
     use std::panic;
     use std::process::exit;
 
-    type TestCase = (&'static str, fn());
+    pub type TestCase = (&'static str, fn());
 
     pub struct TestSuite {
         tests: Vec<TestCase>,
     }
 
     impl TestSuite {
-        pub fn new() -> TestSuite {
+        pub fn empty() -> TestSuite {
             TestSuite {
                 tests: Vec::new()
+            }
+        }
+
+        pub fn of(tests: Vec<TestCase>) -> TestSuite {
+            TestSuite {
+                tests
             }
         }
 
@@ -47,8 +53,6 @@ mod runit {
 
             success_or_failure(success)
         }
-
-
     }
 
     fn success_or_failure(success: bool) {
@@ -72,12 +76,13 @@ mod runit {
 
 use runit::TestSuite;
 use runit::assert_true;
+use runit::TestCase;
 
 fn main() {
-    let mut suite = TestSuite::new();
-    suite.add_test("successful test", successful_test);
-    suite.add_test("failing test", failing_test);
-    suite.run();
+    TestSuite::of(vec![
+        ("successful test", successful_test),
+        ("failing test", failing_test),
+    ]).run();
 }
 
 fn successful_test() {
