@@ -1,3 +1,4 @@
+use std::ops::Deref;
 use std::panic;
 use std::process::exit;
 use crate::runit::TestCaseOutcome::{Fail, Pass};
@@ -89,6 +90,12 @@ impl TestSuiteResult {
                 success = false
             }
         }
+
+        for result in &self.suite_results {
+            if !result.is_success() {
+                success = false
+            }
+        }
         return success;
     }
 }
@@ -139,27 +146,39 @@ impl TestSuite {
     }
 
     fn simple_print(results: &TestSuiteResult) {
-        println!("Test Results for: {}", results.name);
+        println!();
+        Self::print_nested(&results, "");
+        println!();
+        if results.is_success() {
+            println!("Tests Pass!");
+        } else {
+            println!("Test Failure!");
+        }
+    }
+
+    fn print_nested(results: &TestSuiteResult, indent: &str) {
+        print!("{}", indent);
+        print!("{}: ", results.name);
+        if results.is_success() {
+            println!("Passes!");
+        } else {
+            println!("Fails!");
+        }
+
 
         for suite_result in &results.suite_results {
-            Self::simple_print(suite_result)
+            Self::print_nested(suite_result, (indent.to_string() + "  ").deref())
         }
 
         for case_result in &results.case_results {
             match case_result.outcome {
                 Pass => {
-                    println!("{} successful", case_result.name);
+                    println!("  {}{} Passes!", indent, case_result.name);
                 }
                 Fail(msg) => {
-                    println!("{} failed with reason: {}", case_result.name, msg);
+                    println!("  {}{} failed with reason: {}", indent, case_result.name, msg);
                 }
             }
-        }
-
-        if results.is_success() {
-            println!("Tests Pass!");
-        } else {
-            println!("Test Failure!");
         }
     }
 }
