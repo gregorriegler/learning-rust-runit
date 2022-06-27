@@ -36,7 +36,6 @@ impl TestCaseResult {
 
 pub enum TestCaseOutcome {
     Pass,
-    // Ignore,
     Fail(&'static str),
 }
 
@@ -44,7 +43,6 @@ impl TestCaseOutcome {
     pub fn is_fail(&self) -> bool {
          match *self {
             Pass => { false }
-            // Ignore => { false }
             Fail(_) => { true }
         }
     }
@@ -112,9 +110,6 @@ impl TestSuite {
                 Fail(msg) => {
                     println!("{} failed with reason: {}", result.name, msg);
                 }
-                // Ignore => {
-                //     println!("{} was ignored", result.name);
-                // }
             }
         }
     }
