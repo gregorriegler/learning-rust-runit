@@ -2,9 +2,22 @@ use std::panic;
 use std::process::exit;
 
 pub type TestCase = (&'static str, fn());
+pub type TestCaseResult = (&'static str, Result<(), &'static str>);
+
+pub fn successful_case(name: &'static str) -> TestCaseResult {
+    return (name, Ok(()))
+}
+
+pub fn failing_case(name: &'static str, reason: &'static str) -> TestCaseResult {
+    return (name, Err(reason))
+}
 
 pub struct TestSuite {
     tests: Vec<TestCase>,
+}
+
+pub struct TestSuiteResult {
+    results: Vec<TestCaseResult>
 }
 
 impl TestSuite {
@@ -23,19 +36,32 @@ impl TestSuite {
 
         let mut success: bool = true;
 
-        for test in &self.tests {
-            let (test_name, test_fn) = test;
+        let mut results: Vec<TestCaseResult> = Vec::new();
+        for (test_name, test_fn) in &self.tests {
 
             match panic::catch_unwind(|| test_fn()) {
-                Ok(_) => println!("{} successful", test_name),
+                Ok(_) => {
+                    results.push(successful_case(test_name))
+                },
                 Err(e) => {
                     let msg = if let Some(msg) = e.downcast_ref::<String>() {
                         msg.clone()
                     } else {
                         format!("?{:?}", e)
                     };
-                    println!("{} failed with reason: {}", test_name, msg);
+                    let static_msg = Box::leak(msg.into_boxed_str());
+                    results.push(failing_case(test_name, static_msg));
                     success = false
+                }
+            }
+        }
+        for (name, result) in results {
+            match result {
+                Ok(_) => {
+                    println!("{} successful", name);
+                }
+                Err(msg) => {
+                    println!("{} failed with reason: {}", name, msg);
                 }
             }
         }
