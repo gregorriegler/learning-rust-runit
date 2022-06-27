@@ -4,14 +4,14 @@ use TestCaseOutcome::Ignore;
 use crate::runit::TestCaseOutcome::{Fail, Pass};
 
 pub type TestCase = (&'static str, fn());
-pub type TestCaseResult = (&'static str, Result<(), &'static str>, TestCaseOutcome);
+pub type TestCaseResult = (&'static str, TestCaseOutcome);
 
 pub fn successful_case(name: &'static str) -> TestCaseResult {
-    return (name, Ok(()), Pass)
+    return (name, Pass);
 }
 
 pub fn failing_case(name: &'static str, reason: &'static str) -> TestCaseResult {
-    return (name, Err(reason), Fail(reason))
+    return (name, Fail(reason));
 }
 
 pub struct TestSuite {
@@ -19,13 +19,13 @@ pub struct TestSuite {
 }
 
 pub struct TestSuiteResult {
-    results: Vec<TestCaseResult>
+    results: Vec<TestCaseResult>,
 }
 
 pub enum TestCaseOutcome {
     Pass,
     Ignore,
-    Fail(&'static str)
+    Fail(&'static str),
 }
 
 impl TestCaseOutcome {
@@ -34,7 +34,7 @@ impl TestCaseOutcome {
             Pass => { false }
             Ignore => { false }
             Fail(_) => { true }
-        }
+        };
     }
 }
 
@@ -62,7 +62,7 @@ impl TestSuite {
         print(&results);
 
         let mut success: bool = true;
-        for (_, result, outcome) in results {
+        for (_, outcome) in results {
             if outcome.is_fail() {
                 success = false
             }
@@ -76,7 +76,7 @@ impl TestSuite {
             match panic::catch_unwind(|| test_fn()) {
                 Ok(_) => {
                     results.push(successful_case(test_name))
-                },
+                }
                 Err(e) => {
                     let msg = if let Some(msg) = e.downcast_ref::<String>() {
                         msg.clone()
@@ -92,7 +92,7 @@ impl TestSuite {
     }
 
     fn simple_print(results: &Vec<TestCaseResult>) {
-        for (name, result, outcome) in results {
+        for (name, outcome) in results {
             match outcome {
                 Pass => {
                     println!("{} successful", name);
@@ -100,7 +100,9 @@ impl TestSuite {
                 Fail(msg) => {
                     println!("{} failed with reason: {}", name, msg);
                 }
-                _ => {}
+                Ignore => {
+                    println!("{} was ignored", name);
+                }
             }
         }
     }
