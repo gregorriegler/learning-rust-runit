@@ -1,6 +1,5 @@
 use std::panic;
 use std::process::exit;
-use TestCaseOutcome::Ignore;
 use crate::runit::TestCaseOutcome::{Fail, Pass};
 
 pub type TestCase = (&'static str, fn());
@@ -16,10 +15,6 @@ pub fn failing_case(name: &'static str, reason: &'static str) -> TestCaseResult 
 
 pub struct TestSuite {
     tests: Vec<TestCase>,
-}
-
-pub struct TestSuiteResult {
-    results: Vec<TestCaseResult>,
 }
 
 pub struct TestCaseResultNew {
@@ -50,7 +45,7 @@ impl TestCaseResultNew {
 
 pub enum TestCaseOutcome {
     Pass,
-    Ignore,
+    // Ignore,
     Fail(&'static str),
 }
 
@@ -58,7 +53,7 @@ impl TestCaseOutcome {
     pub fn is_fail(&self) -> bool {
          match *self {
             Pass => { false }
-            Ignore => { false }
+            // Ignore => { false }
             Fail(_) => { true }
         }
     }
@@ -129,9 +124,9 @@ impl TestSuite {
                 Fail(msg) => {
                     println!("{} failed with reason: {}", result.name, msg);
                 }
-                Ignore => {
-                    println!("{} was ignored", result.name);
-                }
+                // Ignore => {
+                //     println!("{} was ignored", result.name);
+                // }
             }
         }
     }
