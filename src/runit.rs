@@ -22,6 +22,32 @@ pub struct TestSuiteResult {
     results: Vec<TestCaseResult>,
 }
 
+pub struct TestCaseResultNew {
+    name: &'static str,
+    outcome: TestCaseOutcome
+}
+
+impl TestCaseResultNew {
+
+    pub fn pass(name: &'static str) -> TestCaseResultNew {
+        return TestCaseResultNew {
+            name,
+            outcome: Pass
+        }
+    }
+
+    pub fn fail(name: &'static str, reason: &'static str) -> TestCaseResultNew {
+        return TestCaseResultNew {
+            name,
+            outcome: Fail(reason)
+        }
+    }
+
+    pub fn is_fail(&self) -> bool {
+        self.outcome.is_fail()
+    }
+}
+
 pub enum TestCaseOutcome {
     Pass,
     Ignore,
@@ -30,11 +56,11 @@ pub enum TestCaseOutcome {
 
 impl TestCaseOutcome {
     pub fn is_fail(&self) -> bool {
-        return match *self {
+         match *self {
             Pass => { false }
             Ignore => { false }
             Fail(_) => { true }
-        };
+        }
     }
 }
 
@@ -50,7 +76,7 @@ impl TestSuite {
     }
 
     // TODO: all prints go to printer
-    fn run_with_printer(self, print: &dyn Fn(&Vec<TestCaseResult>) -> ()) {
+    fn run_with_printer(self, print: &dyn Fn(&Vec<TestCaseResultNew>) -> ()) {
         if self.tests.is_empty() {
             println!("No Tests to run");
             return;
@@ -62,20 +88,22 @@ impl TestSuite {
         print(&results);
 
         let mut success: bool = true;
-        for (_, outcome) in results {
-            if outcome.is_fail() {
+        for result in results {
+            if result.is_fail() {
                 success = false
             }
         }
         success_or_failure(success)
     }
 
-    fn run_cases(self) -> Vec<TestCaseResult> {
+    fn run_cases(self) -> Vec<TestCaseResultNew> {
         let mut results: Vec<TestCaseResult> = Vec::new();
+        let mut results_new: Vec<TestCaseResultNew> = Vec::new();
         for (test_name, test_fn) in &self.tests {
             match panic::catch_unwind(|| test_fn()) {
                 Ok(_) => {
-                    results.push(successful_case(test_name))
+                    results.push(successful_case(test_name));
+                    results_new.push(TestCaseResultNew::pass(test_name))
                 }
                 Err(e) => {
                     let msg = if let Some(msg) = e.downcast_ref::<String>() {
@@ -85,23 +113,24 @@ impl TestSuite {
                     };
                     let static_msg = Box::leak(msg.into_boxed_str());
                     results.push(failing_case(test_name, static_msg));
+                    results_new.push(TestCaseResultNew::fail(test_name, static_msg))
                 }
             }
         }
-        results
+        results_new
     }
 
-    fn simple_print(results: &Vec<TestCaseResult>) {
-        for (name, outcome) in results {
-            match outcome {
+    fn simple_print(results: &Vec<TestCaseResultNew>) {
+        for result in results {
+            match result.outcome {
                 Pass => {
-                    println!("{} successful", name);
+                    println!("{} successful", result.name);
                 }
                 Fail(msg) => {
-                    println!("{} failed with reason: {}", name, msg);
+                    println!("{} failed with reason: {}", result.name, msg);
                 }
                 Ignore => {
-                    println!("{} was ignored", name);
+                    println!("{} was ignored", result.name);
                 }
             }
         }
