@@ -10,7 +10,7 @@ warning: `runit` (bin "runit") generated 1 warning
     Finished dev [unoptimized + debuginfo] target(s) in 0.00s
      Running `target/debug/runit`
 Test Results:
-thread 'main' panicked at 'Expected 'true' but got 'false'', src/runit.rs:95:9
+thread 'main' panicked at 'Expected 'true' but got 'false'', src/runit.rs:99:9
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 successful test successful
 failing test2 failed with reason: Expected 'true' but got 'false'
