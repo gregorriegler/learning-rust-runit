@@ -2,6 +2,13 @@ use std::panic;
 use std::process::exit;
 use crate::runit::TestCaseOutcome::{Fail, Pass};
 
+pub fn suite(name: &'static str, tests: &[TestCase]) -> TestSuite {
+    TestSuite {
+        name,
+        tests: tests.to_vec(),
+    }
+}
+
 pub type TestCase = (&'static str, fn());
 
 pub struct TestSuite {
@@ -68,18 +75,11 @@ impl TestSuiteResult {
                 success = false
             }
         }
-        return success
+        return success;
     }
 }
 
 impl TestSuite {
-    pub fn of(name: &'static str, given_tests: &[TestCase]) -> TestSuite {
-        TestSuite {
-            name,
-            tests: given_tests.to_vec()
-        }
-    }
-
     pub fn run(self) {
         self.run_with_printer(&Self::simple_print)
     }

@@ -1,7 +1,7 @@
 mod runit;
 
 fn main() {
-    runit::TestSuite::of("Inner Suite", &[
+    runit::suite("Inner Suite", &[
         ("successful test", successful_test),
         ("failing test2", || runit::assert_true(false)),
     ]).run();
