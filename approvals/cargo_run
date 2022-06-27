@@ -6,11 +6,11 @@ warning: unused variable: `result`
    |
    = note: `#[warn(unused_variables)]` on by default
 
-warning: unused variable: `outcome`
-  --> src/runit.rs:95:28
+warning: unused variable: `result`
+  --> src/runit.rs:95:20
    |
 95 |         for (name, result, outcome) in results {
-   |                            ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_outcome`
+   |                    ^^^^^^ help: if this is intentional, prefix it with an underscore: `_result`
 
 warning: struct is never constructed: `TestSuiteResult`
   --> src/runit.rs:21:12
@@ -30,7 +30,7 @@ warning: `runit` (bin "runit") generated 4 warnings
     Finished dev [unoptimized + debuginfo] target(s) in 0.00s
      Running `target/debug/runit`
 Test Results:
-thread 'main' panicked at 'Expected 'true' but got 'false'', src/runit.rs:122:9
+thread 'main' panicked at 'Expected 'true' but got 'false'', src/runit.rs:123:9
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 successful test successful
 failing test2 failed with reason: Expected 'true' but got 'false'

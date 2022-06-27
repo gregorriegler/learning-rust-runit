@@ -93,13 +93,14 @@ impl TestSuite {
 
     fn simple_print(results: &Vec<TestCaseResult>) {
         for (name, result, outcome) in results {
-            match result {
-                Ok(_) => {
+            match outcome {
+                Pass => {
                     println!("{} successful", name);
                 }
-                Err(msg) => {
+                Fail(msg) => {
                     println!("{} failed with reason: {}", name, msg);
                 }
+                _ => {}
             }
         }
     }
