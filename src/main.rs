@@ -6,14 +6,14 @@ mod runit;
 fn main() {
     suite("Outer Suite",
           &[
-               describe("Inner Suite 1", &[
-                   ("successful test", successful_test)
-               ]),
-               describe("Inner Suite 2", &[
-                   ("successful test", successful_test),
-                   ("failing test2", || assert_true(false)),
-               ])
-           ],
+              describe("Inner Suite 1", &[
+                  ("successful test", successful_test)
+              ]),
+              describe("Inner Suite 2", &[
+                  ("successful test", successful_test),
+                  ("failing test2", || assert_true(false)),
+              ])
+          ],
     ).run();
 }
 
