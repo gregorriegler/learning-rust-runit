@@ -1,8 +1,15 @@
     Finished dev [unoptimized + debuginfo] target(s) in 0.00s
      Running `target/debug/runit`
-thread 'main' panicked at 'Expected 'true' but got 'false'', src/runit.rs:152:9
+thread 'main' panicked at 'Expected 'true' but got 'false'', src/runit.rs:173:9
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
-Test Results for: Inner Suite
+thread 'main' panicked at 'Expected 'true' but got 'false'', src/runit.rs:173:9
+Test Results for: Outer Suite
+Test Results for: Inner Suite 1
 successful test successful
 failing test2 failed with reason: Expected 'true' but got 'false'
 Test Failure!
+Test Results for: Inner Suite 2
+successful test successful
+failing test2 failed with reason: Expected 'true' but got 'false'
+Test Failure!
+Tests Pass!

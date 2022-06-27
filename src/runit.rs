@@ -107,7 +107,9 @@ impl TestSuite {
         let result = self.run_cases();
         print(&result);
 
-        success_or_failure(result.is_success())
+        if !result.is_success() {
+            exit(1)
+        }
     }
 
     fn run_cases(&self) -> TestSuiteResult {
@@ -153,15 +155,13 @@ impl TestSuite {
                 }
             }
         }
-    }
-}
 
-fn success_or_failure(success: bool) {
-    if !success {
-        println!("Test Failure!");
-        exit(1)
+        if results.is_success() {
+            println!("Tests Pass!");
+        } else {
+            println!("Test Failure!");
+        }
     }
-    println!("Test Success!");
 }
 
 pub fn assert_true(value: bool) {
