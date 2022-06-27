@@ -2,17 +2,29 @@ use std::panic;
 use std::process::exit;
 use crate::runit::TestCaseOutcome::{Fail, Pass};
 
-pub fn suite(name: &'static str, tests: &[TestCase]) -> TestSuite {
+
+pub fn suite(name: &'static str, suites: &[TestSuite]) -> TestSuite {
     TestSuite {
         name,
+        suites: suites.to_vec(),
+        tests: vec![],
+    }
+}
+
+pub fn describe(name: &'static str, tests: &[TestCase]) -> TestSuite {
+    TestSuite {
+        name,
+        suites: vec![],
         tests: tests.to_vec(),
     }
 }
 
 pub type TestCase = (&'static str, fn());
 
+#[derive(Clone)]
 pub struct TestSuite {
     name: &'static str,
+    suites: Vec<TestSuite>,
     tests: Vec<TestCase>,
 }
 
@@ -57,20 +69,22 @@ impl TestCaseResult {
 
 pub struct TestSuiteResult {
     name: &'static str,
-    results: Vec<TestCaseResult>,
+    case_results: Vec<TestCaseResult>,
+    suite_results: Vec<TestSuiteResult>
 }
 
 impl TestSuiteResult {
-    pub fn of(name: &'static str, results: Vec<TestCaseResult>) -> Self {
+    pub fn of(name: &'static str, case_results: Vec<TestCaseResult>, suite_results: Vec<TestSuiteResult>) -> Self {
         return Self {
             name,
-            results,
+            case_results,
+            suite_results
         };
     }
 
     pub fn is_success(&self) -> bool {
         let mut success: bool = true;
-        for result in &self.results {
+        for result in &self.case_results {
             if result.is_fail() {
                 success = false
             }
@@ -80,30 +94,28 @@ impl TestSuiteResult {
 }
 
 impl TestSuite {
-    pub fn run(self) {
+    pub fn run(&self) {
         self.run_with_printer(&Self::simple_print)
     }
 
     // TODO: all prints go to printer
-    fn run_with_printer(self, print: &dyn Fn(&TestSuiteResult) -> ()) {
-        if self.tests.is_empty() {
+    fn run_with_printer(&self, print: &dyn Fn(&TestSuiteResult) -> ()) {
+        if self.tests.is_empty() && self.suites.is_empty() {
             println!("No Tests to run");
             return;
         }
         let result = self.run_cases();
-
         print(&result);
-
 
         success_or_failure(result.is_success())
     }
 
-    fn run_cases(self) -> TestSuiteResult {
-        let mut results: Vec<TestCaseResult> = Vec::new();
+    fn run_cases(&self) -> TestSuiteResult {
+        let mut case_results: Vec<TestCaseResult> = Vec::new();
         for (test_name, test_fn) in &self.tests {
             match panic::catch_unwind(|| test_fn()) {
                 Ok(_) => {
-                    results.push(TestCaseResult::pass(test_name))
+                    case_results.push(TestCaseResult::pass(test_name))
                 }
                 Err(e) => {
                     let msg = if let Some(msg) = e.downcast_ref::<String>() {
@@ -112,23 +124,32 @@ impl TestSuite {
                         format!("?{:?}", e)
                     };
                     let static_msg = Box::leak(msg.into_boxed_str());
-                    results.push(TestCaseResult::fail(test_name, static_msg))
+                    case_results.push(TestCaseResult::fail(test_name, static_msg))
                 }
             }
         }
-        TestSuiteResult::of(self.name, results)
+
+        let suite_results: Vec<TestSuiteResult> = self.suites.iter()
+            .map(|it| it.run_cases())
+            .collect();
+
+        TestSuiteResult::of(self.name, case_results, suite_results)
     }
 
     fn simple_print(results: &TestSuiteResult) {
         println!("Test Results for: {}", results.name);
 
-        for result in &results.results {
-            match result.outcome {
+        for suite_result in &results.suite_results {
+            Self::simple_print(suite_result)
+        }
+
+        for case_result in &results.case_results {
+            match case_result.outcome {
                 Pass => {
-                    println!("{} successful", result.name);
+                    println!("{} successful", case_result.name);
                 }
                 Fail(msg) => {
-                    println!("{} failed with reason: {}", result.name, msg);
+                    println!("{} failed with reason: {}", case_result.name, msg);
                 }
             }
         }
