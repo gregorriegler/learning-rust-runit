@@ -1,15 +1,17 @@
 use std::panic;
 use std::process::exit;
+use TestCaseOutcome::Ignore;
+use crate::runit::TestCaseOutcome::{Fail, Pass};
 
 pub type TestCase = (&'static str, fn());
-pub type TestCaseResult = (&'static str, Result<(), &'static str>);
+pub type TestCaseResult = (&'static str, Result<(), &'static str>, TestCaseOutcome);
 
 pub fn successful_case(name: &'static str) -> TestCaseResult {
-    return (name, Ok(()))
+    return (name, Ok(()), Pass)
 }
 
 pub fn failing_case(name: &'static str, reason: &'static str) -> TestCaseResult {
-    return (name, Err(reason))
+    return (name, Err(reason), Fail(reason))
 }
 
 pub struct TestSuite {
@@ -18,6 +20,22 @@ pub struct TestSuite {
 
 pub struct TestSuiteResult {
     results: Vec<TestCaseResult>
+}
+
+pub enum TestCaseOutcome {
+    Pass,
+    Ignore,
+    Fail(&'static str)
+}
+
+impl TestCaseOutcome {
+    pub fn is_fail(&self) -> bool {
+        return match *self {
+            Pass => { false }
+            Ignore => { false }
+            Fail(_) => { true }
+        }
+    }
 }
 
 impl TestSuite {
@@ -44,8 +62,8 @@ impl TestSuite {
         print(&results);
 
         let mut success: bool = true;
-        for (_, result) in results {
-            if result.is_err() {
+        for (_, result, outcome) in results {
+            if outcome.is_fail() {
                 success = false
             }
         }
@@ -74,7 +92,7 @@ impl TestSuite {
     }
 
     fn simple_print(results: &Vec<TestCaseResult>) {
-        for (name, result) in results {
+        for (name, result, outcome) in results {
             match result {
                 Ok(_) => {
                     println!("{} successful", name);
