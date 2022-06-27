@@ -5,33 +5,8 @@ use crate::runit::TestCaseOutcome::{Fail, Pass};
 pub type TestCase = (&'static str, fn());
 
 pub struct TestSuite {
-    tests: Vec<TestCase>,
-}
-
-pub struct TestCaseResult {
     name: &'static str,
-    outcome: TestCaseOutcome
-}
-
-impl TestCaseResult {
-
-    pub fn pass(name: &'static str) -> TestCaseResult {
-        return TestCaseResult {
-            name,
-            outcome: Pass
-        }
-    }
-
-    pub fn fail(name: &'static str, reason: &'static str) -> TestCaseResult {
-        return TestCaseResult {
-            name,
-            outcome: Fail(reason)
-        }
-    }
-
-    pub fn is_fail(&self) -> bool {
-        self.outcome.is_fail()
-    }
+    tests: Vec<TestCase>,
 }
 
 pub enum TestCaseOutcome {
@@ -41,16 +16,66 @@ pub enum TestCaseOutcome {
 
 impl TestCaseOutcome {
     pub fn is_fail(&self) -> bool {
-         match *self {
+        match *self {
             Pass => { false }
             Fail(_) => { true }
         }
     }
 }
 
+pub struct TestCaseResult {
+    name: &'static str,
+    outcome: TestCaseOutcome,
+}
+
+impl TestCaseResult {
+    pub fn pass(name: &'static str) -> TestCaseResult {
+        return TestCaseResult {
+            name,
+            outcome: Pass,
+        };
+    }
+
+    pub fn fail(name: &'static str, reason: &'static str) -> TestCaseResult {
+        return TestCaseResult {
+            name,
+            outcome: Fail(reason),
+        };
+    }
+
+    pub fn is_fail(&self) -> bool {
+        self.outcome.is_fail()
+    }
+}
+
+pub struct TestSuiteResult {
+    name: &'static str,
+    results: Vec<TestCaseResult>,
+}
+
+impl TestSuiteResult {
+    pub fn of(name: &'static str, results: Vec<TestCaseResult>) -> Self {
+        return Self {
+            name,
+            results,
+        };
+    }
+
+    pub fn is_success(&self) -> bool {
+        let mut success: bool = true;
+        for result in &self.results {
+            if result.is_fail() {
+                success = false
+            }
+        }
+        return success
+    }
+}
+
 impl TestSuite {
-    pub fn of(given_tests: &[TestCase]) -> TestSuite {
+    pub fn of(name: &'static str, given_tests: &[TestCase]) -> TestSuite {
         TestSuite {
+            name,
             tests: given_tests.to_vec()
         }
     }
@@ -60,27 +85,20 @@ impl TestSuite {
     }
 
     // TODO: all prints go to printer
-    fn run_with_printer(self, print: &dyn Fn(&Vec<TestCaseResult>) -> ()) {
+    fn run_with_printer(self, print: &dyn Fn(&TestSuiteResult) -> ()) {
         if self.tests.is_empty() {
             println!("No Tests to run");
             return;
         }
-        println!("Test Results:");
+        let result = self.run_cases();
 
-        let results = self.run_cases();
+        print(&result);
 
-        print(&results);
 
-        let mut success: bool = true;
-        for result in results {
-            if result.is_fail() {
-                success = false
-            }
-        }
-        success_or_failure(success)
+        success_or_failure(result.is_success())
     }
 
-    fn run_cases(self) -> Vec<TestCaseResult> {
+    fn run_cases(self) -> TestSuiteResult {
         let mut results: Vec<TestCaseResult> = Vec::new();
         for (test_name, test_fn) in &self.tests {
             match panic::catch_unwind(|| test_fn()) {
@@ -98,11 +116,13 @@ impl TestSuite {
                 }
             }
         }
-        results
+        TestSuiteResult::of(self.name, results)
     }
 
-    fn simple_print(results: &Vec<TestCaseResult>) {
-        for result in results {
+    fn simple_print(results: &TestSuiteResult) {
+        println!("Test Results for: {}", results.name);
+
+        for result in &results.results {
             match result.outcome {
                 Pass => {
                     println!("{} successful", result.name);

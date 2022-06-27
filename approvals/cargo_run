@@ -1,8 +1,9 @@
-    Finished dev [unoptimized + debuginfo] target(s) in 0.00s
+   Compiling runit v0.1.0 (/home/gregor/code/learning-rust/runit)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.18s
      Running `target/debug/runit`
-Test Results:
-thread 'main' panicked at 'Expected 'true' but got 'false'', src/runit.rs:137:9
+thread 'main' panicked at 'Expected 'true' but got 'false'', src/runit.rs:152:9
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Test Results for: Inner Suite
 successful test successful
 failing test2 failed with reason: Expected 'true' but got 'false'
 Test Failure!
