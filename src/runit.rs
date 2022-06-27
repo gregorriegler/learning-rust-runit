@@ -39,15 +39,20 @@ impl TestSuite {
         }
         println!("Test Results:");
 
-        let (success, results) = self.run_cases();
+        let results = self.run_cases();
 
         print(&results);
 
+        let mut success: bool = true;
+        for (_, result) in results {
+            if result.is_err() {
+                success = false
+            }
+        }
         success_or_failure(success)
     }
 
-    fn run_cases(self) -> (bool, Vec<TestCaseResult>) {
-        let mut success: bool = true;
+    fn run_cases(self) -> Vec<TestCaseResult> {
         let mut results: Vec<TestCaseResult> = Vec::new();
         for (test_name, test_fn) in &self.tests {
             match panic::catch_unwind(|| test_fn()) {
@@ -62,11 +67,10 @@ impl TestSuite {
                     };
                     let static_msg = Box::leak(msg.into_boxed_str());
                     results.push(failing_case(test_name, static_msg));
-                    success = false
                 }
             }
         }
-        (success, results)
+        results
     }
 
     fn simple_print(results: &Vec<TestCaseResult>) {
