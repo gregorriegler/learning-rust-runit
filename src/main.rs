@@ -1,14 +1,16 @@
+use runit::{assert_true, suite};
+
 mod runit;
 
 fn main() {
-    runit::suite("Inner Suite", &[
+    suite("Inner Suite", &[
         ("successful test", successful_test),
-        ("failing test2", || runit::assert_true(false)),
+        ("failing test2", || assert_true(false)),
     ]).run();
 }
 
 fn successful_test() {
-    runit::assert_true(true);
+    assert_true(true);
 }
 
 
