@@ -28,6 +28,10 @@ impl TestSuite {
     }
 
     pub fn run(self) {
+        self.run_with_printer(&Self::simple_print)
+    }
+
+    fn run_with_printer(self, print: &dyn Fn(&Vec<TestCaseResult>) -> ()) {
         if self.tests.is_empty() {
             println!("No Tests to run");
             return;
@@ -38,7 +42,6 @@ impl TestSuite {
 
         let mut results: Vec<TestCaseResult> = Vec::new();
         for (test_name, test_fn) in &self.tests {
-
             match panic::catch_unwind(|| test_fn()) {
                 Ok(_) => {
                     results.push(successful_case(test_name))
@@ -55,6 +58,13 @@ impl TestSuite {
                 }
             }
         }
+
+        print(&results);
+
+        success_or_failure(success)
+    }
+
+    fn simple_print(results: &Vec<TestCaseResult>) {
         for (name, result) in results {
             match result {
                 Ok(_) => {
@@ -65,8 +75,6 @@ impl TestSuite {
                 }
             }
         }
-
-        success_or_failure(success)
     }
 }
 
