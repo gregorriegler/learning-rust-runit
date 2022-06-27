@@ -160,7 +160,7 @@ impl TestSuite {
         print!("{}", indent);
         print!("{}: ", results.name);
         if results.is_success() {
-            println!("Passes!");
+            println!("All Passed!");
         } else {
             println!("Fails!");
         }
@@ -173,10 +173,10 @@ impl TestSuite {
         for case_result in &results.case_results {
             match case_result.outcome {
                 Pass => {
-                    println!("  {}{} Passes!", indent, case_result.name);
+                    println!("  {}{}: Passes!", indent, case_result.name);
                 }
                 Fail(msg) => {
-                    println!("  {}{} failed with reason: {}", indent, case_result.name, msg);
+                    println!("  {}{}: failed with reason: {}", indent, case_result.name, msg);
                 }
             }
         }
