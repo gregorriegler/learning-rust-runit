@@ -36,10 +36,10 @@ pub struct TestSuite {
 
 impl TestSuite {
     pub fn run_and_print(&self) {
-        self.run_with_printer(&Self::simple_print)
+        self.run_with_printer(simple_print)
     }
 
-    fn run_with_printer(&self, print: &dyn Fn(&TestSuiteResult) -> ()) {
+    fn run_with_printer(&self, print: PrintTestSuiteResult) {
         let result = self.run();
 
         print(&result);
@@ -66,39 +66,41 @@ impl TestSuite {
             .map(|it| it.run())
             .collect()
     }
+}
 
-    fn simple_print(results: &TestSuiteResult) {
-        println!();
-        Self::print_nested(&results, "");
-        println!();
-        if results.is_success() {
-            println!("Tests Pass!");
-        } else {
-            println!("Test Failure!");
-        }
+pub type PrintTestSuiteResult = fn(&TestSuiteResult) -> ();
+
+fn simple_print(results: &TestSuiteResult) {
+    println!();
+    print_nested(&results, "");
+    println!();
+    if results.is_success() {
+        println!("Tests Pass!");
+    } else {
+        println!("Test Failure!");
+    }
+}
+
+fn print_nested(results: &TestSuiteResult, indent: &str) {
+    print!("{}", indent);
+    print!("{}: ", results.name);
+    if results.is_success() {
+        println!("All Passed!");
+    } else {
+        println!("Fails!");
     }
 
-    fn print_nested(results: &TestSuiteResult, indent: &str) {
-        print!("{}", indent);
-        print!("{}: ", results.name);
-        if results.is_success() {
-            println!("All Passed!");
-        } else {
-            println!("Fails!");
-        }
+    for suite_result in &results.suite_results {
+        print_nested(suite_result, (indent.to_string() + "  ").deref())
+    }
 
-        for suite_result in &results.suite_results {
-            Self::print_nested(suite_result, (indent.to_string() + "  ").deref())
-        }
-
-        for case_result in &results.case_results {
-            match case_result.outcome {
-                Pass => {
-                    println!("  {}{}: Passes!", indent, case_result.name);
-                }
-                Fail(msg) => {
-                    println!("  {}{}: Failed with reason: {}", indent, case_result.name, msg);
-                }
+    for case_result in &results.case_results {
+        match case_result.outcome {
+            Pass => {
+                println!("  {}{}: Passes!", indent, case_result.name);
+            }
+            Fail(msg) => {
+                println!("  {}{}: Failed with reason: {}", indent, case_result.name, msg);
             }
         }
     }
