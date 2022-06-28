@@ -176,7 +176,7 @@ impl TestSuite {
                     println!("  {}{}: Passes!", indent, case_result.name);
                 }
                 Fail(msg) => {
-                    println!("  {}{}: failed with reason: {}", indent, case_result.name, msg);
+                    println!("  {}{}: Failed with reason: {}", indent, case_result.name, msg);
                 }
             }
         }

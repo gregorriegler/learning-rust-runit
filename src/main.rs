@@ -13,7 +13,7 @@ fn main() {
                   ("successful test", successful_test),
                   ("failing test2", || assert_true(false)),
               ])
-          ],
+          ]
     ).run();
 }
 
