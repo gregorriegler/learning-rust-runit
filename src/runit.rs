@@ -34,6 +34,76 @@ pub struct TestSuite {
     tests: Vec<TestCase>,
 }
 
+impl TestSuite {
+    pub fn run(&self) {
+        self.run_with_printer(&Self::simple_print)
+    }
+
+    fn run_with_printer(&self, print: &dyn Fn(&TestSuiteResult) -> ()) {
+        let result = self.run_all();
+
+        print(&result);
+
+        if !result.is_success() {
+            exit(1)
+        }
+    }
+
+    fn run_all(&self) -> TestSuiteResult {
+        let case_results: Vec<TestCaseResult> = self.run_cases();
+        let suite_results: Vec<TestSuiteResult> = self.run_suites();
+        TestSuiteResult::of(self.name, case_results, suite_results)
+    }
+
+    fn run_cases(&self) -> Vec<TestCaseResult> {
+        self.tests.iter()
+            .map(|it| it.run())
+            .collect()
+    }
+
+    fn run_suites(&self) -> Vec<TestSuiteResult> {
+        self.suites.iter()
+            .map(|it| it.run_all())
+            .collect()
+    }
+
+    fn simple_print(results: &TestSuiteResult) {
+        println!();
+        Self::print_nested(&results, "");
+        println!();
+        if results.is_success() {
+            println!("Tests Pass!");
+        } else {
+            println!("Test Failure!");
+        }
+    }
+
+    fn print_nested(results: &TestSuiteResult, indent: &str) {
+        print!("{}", indent);
+        print!("{}: ", results.name);
+        if results.is_success() {
+            println!("All Passed!");
+        } else {
+            println!("Fails!");
+        }
+
+        for suite_result in &results.suite_results {
+            Self::print_nested(suite_result, (indent.to_string() + "  ").deref())
+        }
+
+        for case_result in &results.case_results {
+            match case_result.outcome {
+                Pass => {
+                    println!("  {}{}: Passes!", indent, case_result.name);
+                }
+                Fail(msg) => {
+                    println!("  {}{}: Failed with reason: {}", indent, case_result.name, msg);
+                }
+            }
+        }
+    }
+}
+
 #[derive(Clone)]
 pub struct TestCase {
     name: &'static str,
@@ -127,77 +197,6 @@ impl TestSuiteResult {
             }
         }
         return success;
-    }
-}
-
-impl TestSuite {
-    pub fn run(&self) {
-        self.run_with_printer(&Self::simple_print)
-    }
-
-    fn run_with_printer(&self, print: &dyn Fn(&TestSuiteResult) -> ()) {
-        let result = self.run_all();
-
-        print(&result);
-
-        if !result.is_success() {
-            exit(1)
-        }
-    }
-
-    fn run_all(&self) -> TestSuiteResult {
-        let case_results: Vec<TestCaseResult> = self.run_cases();
-        let suite_results: Vec<TestSuiteResult> = self.run_suites();
-        TestSuiteResult::of(self.name, case_results, suite_results)
-    }
-
-    fn run_cases(&self) -> Vec<TestCaseResult> {
-        self.tests.iter()
-            .map(|it| it.run())
-            .collect()
-    }
-
-    fn run_suites(&self) -> Vec<TestSuiteResult> {
-        self.suites.iter()
-            .map(|it| it.run_all())
-            .collect()
-    }
-
-    fn simple_print(results: &TestSuiteResult) {
-        println!();
-        Self::print_nested(&results, "");
-        println!();
-        if results.is_success() {
-            println!("Tests Pass!");
-        } else {
-            println!("Test Failure!");
-        }
-    }
-
-    fn print_nested(results: &TestSuiteResult, indent: &str) {
-        print!("{}", indent);
-        print!("{}: ", results.name);
-        if results.is_success() {
-            println!("All Passed!");
-        } else {
-            println!("Fails!");
-        }
-
-
-        for suite_result in &results.suite_results {
-            Self::print_nested(suite_result, (indent.to_string() + "  ").deref())
-        }
-
-        for case_result in &results.case_results {
-            match case_result.outcome {
-                Pass => {
-                    println!("  {}{}: Passes!", indent, case_result.name);
-                }
-                Fail(msg) => {
-                    println!("  {}{}: Failed with reason: {}", indent, case_result.name, msg);
-                }
-            }
-        }
     }
 }
 
