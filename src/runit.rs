@@ -136,7 +136,7 @@ impl TestSuite {
     }
 
     fn run_with_printer(&self, print: &dyn Fn(&TestSuiteResult) -> ()) {
-        let result = self.run_cases();
+        let result = self.run_all();
 
         print(&result);
 
@@ -145,16 +145,22 @@ impl TestSuite {
         }
     }
 
-    fn run_cases(&self) -> TestSuiteResult {
-        let case_results: Vec<TestCaseResult> = self.tests.iter()
-            .map(|it| it.run())
-            .collect();
-
-        let suite_results: Vec<TestSuiteResult> = self.suites.iter()
-            .map(|it| it.run_cases())
-            .collect();
-
+    fn run_all(&self) -> TestSuiteResult {
+        let case_results: Vec<TestCaseResult> = self.run_cases();
+        let suite_results: Vec<TestSuiteResult> = self.run_suites();
         TestSuiteResult::of(self.name, case_results, suite_results)
+    }
+
+    fn run_suites(&self) -> Vec<TestSuiteResult> {
+        self.suites.iter()
+            .map(|it| it.run_all())
+            .collect()
+    }
+
+    fn run_cases(&self) -> Vec<TestCaseResult> {
+        self.tests.iter()
+            .map(|it| it.run())
+            .collect()
     }
 
     fn simple_print(results: &TestSuiteResult) {
