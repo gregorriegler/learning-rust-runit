@@ -105,13 +105,9 @@ impl TestSuite {
         self.run_with_printer(&Self::simple_print)
     }
 
-    // TODO: all prints go to printer
     fn run_with_printer(&self, print: &dyn Fn(&TestSuiteResult) -> ()) {
-        if self.tests.is_empty() && self.suites.is_empty() {
-            println!("No Tests to run");
-            return;
-        }
         let result = self.run_cases();
+
         print(&result);
 
         if !result.is_success() {
