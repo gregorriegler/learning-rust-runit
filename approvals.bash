@@ -25,7 +25,7 @@ approve() {
     return
   fi
 
-  if [[ "$(printf "%b" "$actual")" = "$(printf "%b" "$expected")" ]]; then
+  if [[ "$(printf "%b" "$actual" | sed 's/[0-9]*//g')" = "$(printf "%b" "$expected" | sed 's/[0-9]*//g')" ]]; then
     green "PASS $cmd"
   else
     echo "--- [$(blue "diff: $cmd")] ---"
