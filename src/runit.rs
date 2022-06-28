@@ -151,15 +151,15 @@ impl TestSuite {
         TestSuiteResult::of(self.name, case_results, suite_results)
     }
 
-    fn run_suites(&self) -> Vec<TestSuiteResult> {
-        self.suites.iter()
-            .map(|it| it.run_all())
-            .collect()
-    }
-
     fn run_cases(&self) -> Vec<TestCaseResult> {
         self.tests.iter()
             .map(|it| it.run())
+            .collect()
+    }
+
+    fn run_suites(&self) -> Vec<TestSuiteResult> {
+        self.suites.iter()
+            .map(|it| it.run_all())
             .collect()
     }
 
