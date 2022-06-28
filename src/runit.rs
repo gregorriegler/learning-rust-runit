@@ -117,7 +117,8 @@ impl TestSuite {
 
     fn run_cases(&self) -> TestSuiteResult {
         let mut case_results: Vec<TestCaseResult> = Vec::new();
-        for (test_name, test_fn) in &self.tests {
+        for test in &self.tests {
+            let (test_name, test_fn) = test;
             let case_result;
             match panic::catch_unwind(|| test_fn()) {
                 Ok(_) => {
