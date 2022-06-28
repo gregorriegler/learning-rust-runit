@@ -65,7 +65,7 @@ pub fn simple_print(results: &TestSuiteReport) {
     println!();
     print_nested(&results, "");
     println!();
-    if results.is_success() {
+    if results.succeeded() {
         println!("Tests Pass!");
     } else {
         println!("Test Failure!");
@@ -75,7 +75,7 @@ pub fn simple_print(results: &TestSuiteReport) {
 fn print_nested(results: &TestSuiteReport, indent: &str) {
     print!("{}", indent);
     print!("{}: ", results.name);
-    if results.is_success() {
+    if results.succeeded() {
         println!("All Passed!");
     } else {
         println!("Fails!");
@@ -193,25 +193,9 @@ impl TestSuiteReport {
     }
 
     pub fn exit_on_failure(&self) {
-        if !self.is_success() {
+        if self.failed() {
             exit(1)
         }
-    }
-
-    pub fn is_success(&self) -> bool {
-        let mut success: bool = true;
-        for result in &self.cases {
-            if result.failed() {
-                success = false
-            }
-        }
-
-        for result in &self.suites {
-            if !result.is_success() {
-                success = false
-            }
-        }
-        return success;
     }
 }
 
