@@ -41,7 +41,7 @@ impl TestSuite {
         TestSuiteResult::of(self.name, case_results, suite_results)
     }
 
-    pub fn run_and_print(&self) {
+    pub fn run_and_print_and_exit(&self) {
         self.run_with_printer(simple_print)
     }
 

@@ -14,7 +14,7 @@ fn main() {
                   it("failing test2", || assert_true(false)),
               ])
           ]
-    ).run_and_print();
+    ).run_and_print_and_exit();
 }
 
 fn successful_test() {
