@@ -49,7 +49,7 @@ impl TestSuite {
         }
     }
 
-    fn run(&self) -> TestSuiteResult {
+    pub fn run(&self) -> TestSuiteResult {
         let case_results: Vec<TestCaseResult> = self.run_cases();
         let suite_results: Vec<TestSuiteResult> = self.run_suites();
         TestSuiteResult::of(self.name, case_results, suite_results)
