@@ -45,6 +45,7 @@ pub struct TestSuite {
 
 impl TestSuite {
     pub fn run(&self) -> TestSuiteReport {
+        println!("TestSuite {}", self.name);
         let case_results: Vec<TestCaseReport> = self.run_cases();
         let suite_results: Vec<TestSuiteReport> = self.run_suites();
         TestSuiteReport::of(self.name, case_results, suite_results)

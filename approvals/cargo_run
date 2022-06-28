@@ -1,8 +1,10 @@
-   Compiling runit v0.1.0 (/home/gregor/code/learning-rust/runit)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.19s
+    Finished dev [unoptimized + debuginfo] target(s) in 0.00s
      Running `target/debug/runit`
+TestSuite Outer Suite
+TestSuite Inner Suite 1
 Running TestCase successful test ... Passes
 
+TestSuite Inner Suite 2
 Running TestCase successful test ... Passes
 
 thread 'main' panicked at 'Expected 'true' but got 'false'.', src/runit/assert.rs:7:9
