@@ -48,7 +48,7 @@ impl TestSuite {
     fn run_with_printer(&self, print: PrintTestSuiteResult) {
         let result = self.run();
 
-        print(&result);
+        result.print(print);
 
         if !result.is_success() {
             exit(1)
@@ -174,6 +174,12 @@ pub struct TestSuiteResult {
     name: &'static str,
     case_results: Vec<TestCaseResult>,
     suite_results: Vec<TestSuiteResult>,
+}
+
+impl TestSuiteResult {
+    pub fn print(&self, print: PrintTestSuiteResult) {
+        print(self)
+    }
 }
 
 impl TestSuiteResult {
