@@ -28,6 +28,13 @@ pub fn it(name: &'static str, func: fn()) -> TestCase {
 }
 
 #[derive(Clone)]
+pub struct TestSuite {
+    name: &'static str,
+    suites: Vec<TestSuite>,
+    tests: Vec<TestCase>,
+}
+
+#[derive(Clone)]
 pub struct TestCase {
     name: &'static str,
     func: fn(),
@@ -52,27 +59,6 @@ impl TestCase {
     }
 }
 
-pub enum TestCaseOutcome {
-    Pass,
-    Fail(&'static str),
-}
-
-impl TestCaseOutcome {
-    pub fn is_fail(&self) -> bool {
-        match *self {
-            Pass => { false }
-            Fail(_) => { true }
-        }
-    }
-}
-
-#[derive(Clone)]
-pub struct TestSuite {
-    name: &'static str,
-    suites: Vec<TestSuite>,
-    tests: Vec<TestCase>,
-}
-
 pub struct TestCaseResult {
     name: &'static str,
     outcome: TestCaseOutcome,
@@ -95,6 +81,20 @@ impl TestCaseResult {
 
     pub fn is_fail(&self) -> bool {
         self.outcome.is_fail()
+    }
+}
+
+pub enum TestCaseOutcome {
+    Pass,
+    Fail(&'static str),
+}
+
+impl TestCaseOutcome {
+    pub fn is_fail(&self) -> bool {
+        match *self {
+            Pass => { false }
+            Fail(_) => { true }
+        }
     }
 }
 
