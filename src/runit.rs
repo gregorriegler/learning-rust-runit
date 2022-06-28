@@ -35,6 +35,12 @@ pub struct TestSuite {
 }
 
 impl TestSuite {
+    pub fn run(&self) -> TestSuiteResult {
+        let case_results: Vec<TestCaseResult> = self.run_cases();
+        let suite_results: Vec<TestSuiteResult> = self.run_suites();
+        TestSuiteResult::of(self.name, case_results, suite_results)
+    }
+
     pub fn run_and_print(&self) {
         self.run_with_printer(simple_print)
     }
@@ -47,12 +53,6 @@ impl TestSuite {
         if !result.is_success() {
             exit(1)
         }
-    }
-
-    pub fn run(&self) -> TestSuiteResult {
-        let case_results: Vec<TestCaseResult> = self.run_cases();
-        let suite_results: Vec<TestSuiteResult> = self.run_suites();
-        TestSuiteResult::of(self.name, case_results, suite_results)
     }
 
     fn run_cases(&self) -> Vec<TestCaseResult> {
