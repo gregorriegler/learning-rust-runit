@@ -1,5 +1,5 @@
 use runit::{assert_true, describe};
-use crate::runit::suite;
+use crate::runit::{it, suite};
 
 mod runit;
 
@@ -7,11 +7,11 @@ fn main() {
     suite("Outer Suite",
           &[
               describe("Inner Suite 1", &[
-                  ("successful test", successful_test)
+                  it("successful test", successful_test)
               ]),
               describe("Inner Suite 2", &[
-                  ("successful test", successful_test),
-                  ("failing test2", || assert_true(false)),
+                  it("successful test", successful_test),
+                  it("failing test2", || assert_true(false)),
               ])
           ]
     ).run();

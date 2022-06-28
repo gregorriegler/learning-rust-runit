@@ -20,7 +20,37 @@ pub fn describe(name: &'static str, tests: &[TestCase]) -> TestSuite {
     }
 }
 
-pub type TestCase = (&'static str, fn());
+pub fn it(name: &'static str, func: fn()) -> TestCase {
+    TestCase {
+        name,
+        func
+    }
+}
+
+#[derive(Clone)]
+pub struct TestCase {
+    name: &'static str,
+    func: fn()
+}
+
+impl TestCase {
+    fn run(&self) -> TestCaseResult {
+        return match panic::catch_unwind(|| (self.func)()) {
+            Ok(_) => {
+                TestCaseResult::pass(self.name)
+            }
+            Err(e) => {
+                let msg = if let Some(msg) = e.downcast_ref::<String>() {
+                    msg.clone()
+                } else {
+                    format!("?{:?}", e)
+                };
+                let static_msg = Box::leak(msg.into_boxed_str());
+                TestCaseResult::fail(self.name, static_msg)
+            }
+        }
+    }
+}
 
 #[derive(Clone)]
 pub struct TestSuite {
@@ -119,7 +149,7 @@ impl TestSuite {
         let mut case_results: Vec<TestCaseResult> = Vec::new();
 
         for test in &self.tests {
-            let case_result = Self::run_test_case(test);
+            let case_result = test.run();
             case_results.push(case_result)
 
         }
@@ -129,26 +159,6 @@ impl TestSuite {
             .collect();
 
         TestSuiteResult::of(self.name, case_results, suite_results)
-    }
-
-    fn run_test_case(test: &TestCase) -> TestCaseResult {
-        let (test_name, test_fn) = test;
-        let case_result;
-        match panic::catch_unwind(|| test_fn()) {
-            Ok(_) => {
-                case_result = TestCaseResult::pass(test_name);
-            }
-            Err(e) => {
-                let msg = if let Some(msg) = e.downcast_ref::<String>() {
-                    msg.clone()
-                } else {
-                    format!("?{:?}", e)
-                };
-                let static_msg = Box::leak(msg.into_boxed_str());
-                case_result = TestCaseResult::fail(test_name, static_msg);
-            }
-        }
-        case_result
     }
 
     fn simple_print(results: &TestSuiteResult) {
