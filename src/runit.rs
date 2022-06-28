@@ -1,7 +1,7 @@
 use std::ops::Deref;
 use std::panic;
 use std::process::exit;
-use crate::runit::TestCaseOutcome::{Fail, Pass};
+use crate::runit::TestResult::{Fail, Pass};
 
 
 pub fn suite(name: &'static str, suites: &[TestSuite]) -> TestSuite {
@@ -35,28 +35,28 @@ pub struct TestSuite {
 }
 
 impl TestSuite {
-    pub fn run(&self) -> TestSuiteResult {
-        let case_results: Vec<TestCaseResult> = self.run_cases();
-        let suite_results: Vec<TestSuiteResult> = self.run_suites();
-        TestSuiteResult::of(self.name, case_results, suite_results)
+    pub fn run(&self) -> TestSuiteReport {
+        let case_results: Vec<TestCaseReport> = self.run_cases();
+        let suite_results: Vec<TestSuiteReport> = self.run_suites();
+        TestSuiteReport::of(self.name, case_results, suite_results)
     }
 
-    fn run_cases(&self) -> Vec<TestCaseResult> {
+    fn run_cases(&self) -> Vec<TestCaseReport> {
         self.tests.iter()
             .map(|it| it.run())
             .collect()
     }
 
-    fn run_suites(&self) -> Vec<TestSuiteResult> {
+    fn run_suites(&self) -> Vec<TestSuiteReport> {
         self.suites.iter()
             .map(|it| it.run())
             .collect()
     }
 }
 
-pub type PrintTestSuiteResult = fn(&TestSuiteResult) -> ();
+pub type PrintTestSuiteResult = fn(&TestSuiteReport) -> ();
 
-pub fn simple_print(results: &TestSuiteResult) {
+pub fn simple_print(results: &TestSuiteReport) {
     println!();
     print_nested(&results, "");
     println!();
@@ -67,7 +67,7 @@ pub fn simple_print(results: &TestSuiteResult) {
     }
 }
 
-fn print_nested(results: &TestSuiteResult, indent: &str) {
+fn print_nested(results: &TestSuiteReport, indent: &str) {
     print!("{}", indent);
     print!("{}: ", results.name);
     if results.is_success() {
@@ -76,11 +76,11 @@ fn print_nested(results: &TestSuiteResult, indent: &str) {
         println!("Fails!");
     }
 
-    for suite_result in &results.suite_results {
+    for suite_result in &results.suites {
         print_nested(suite_result, (indent.to_string() + "  ").deref())
     }
 
-    for case_result in &results.case_results {
+    for case_result in &results.cases {
         match case_result.outcome {
             Pass => {
                 println!("  {}{}: Passes!", indent, case_result.name);
@@ -99,10 +99,10 @@ pub struct TestCase {
 }
 
 impl TestCase {
-    fn run(&self) -> TestCaseResult {
+    fn run(&self) -> TestCaseReport {
         return match panic::catch_unwind(|| (self.func)()) {
             Ok(_) => {
-                TestCaseResult::pass(self.name)
+                TestCaseReport::pass(self.name)
             }
             Err(e) => {
                 let msg = if let Some(msg) = e.downcast_ref::<String>() {
@@ -111,27 +111,27 @@ impl TestCase {
                     format!("?{:?}", e)
                 };
                 let static_msg = Box::leak(msg.into_boxed_str());
-                TestCaseResult::fail(self.name, static_msg)
+                TestCaseReport::fail(self.name, static_msg)
             }
         };
     }
 }
 
-pub struct TestCaseResult {
+pub struct TestCaseReport {
     name: &'static str,
-    outcome: TestCaseOutcome,
+    outcome: TestResult,
 }
 
-impl TestCaseResult {
-    pub fn pass(name: &'static str) -> TestCaseResult {
-        return TestCaseResult {
+impl TestCaseReport {
+    pub fn pass(name: &'static str) -> TestCaseReport {
+        return TestCaseReport {
             name,
             outcome: Pass,
         };
     }
 
-    pub fn fail(name: &'static str, reason: &'static str) -> TestCaseResult {
-        return TestCaseResult {
+    pub fn fail(name: &'static str, reason: &'static str) -> TestCaseReport {
+        return TestCaseReport {
             name,
             outcome: Fail(reason),
         };
@@ -142,12 +142,12 @@ impl TestCaseResult {
     }
 }
 
-pub enum TestCaseOutcome {
+pub enum TestResult {
     Pass,
     Fail(&'static str),
 }
 
-impl TestCaseOutcome {
+impl TestResult {
     pub fn is_fail(&self) -> bool {
         match *self {
             Pass => { false }
@@ -156,13 +156,13 @@ impl TestCaseOutcome {
     }
 }
 
-pub struct TestSuiteResult {
+pub struct TestSuiteReport {
     name: &'static str,
-    case_results: Vec<TestCaseResult>,
-    suite_results: Vec<TestSuiteResult>,
+    cases: Vec<TestCaseReport>,
+    suites: Vec<TestSuiteReport>,
 }
 
-impl TestSuiteResult {
+impl TestSuiteReport {
     pub fn print(&self, print: PrintTestSuiteResult) -> &Self {
         print(self);
         &self
@@ -175,24 +175,24 @@ impl TestSuiteResult {
     }
 }
 
-impl TestSuiteResult {
-    pub fn of(name: &'static str, case_results: Vec<TestCaseResult>, suite_results: Vec<TestSuiteResult>) -> Self {
+impl TestSuiteReport {
+    pub fn of(name: &'static str, case_results: Vec<TestCaseReport>, suite_results: Vec<TestSuiteReport>) -> Self {
         return Self {
             name,
-            case_results,
-            suite_results,
+            cases: case_results,
+            suites: suite_results,
         };
     }
 
     pub fn is_success(&self) -> bool {
         let mut success: bool = true;
-        for result in &self.case_results {
+        for result in &self.cases {
             if result.is_fail() {
                 success = false
             }
         }
 
-        for result in &self.suite_results {
+        for result in &self.suites {
             if !result.is_success() {
                 success = false
             }
