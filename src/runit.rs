@@ -217,11 +217,12 @@ impl TestSuiteReport {
 
 impl Failable for TestSuiteReport {
     fn succeeded(&self) -> bool {
-        todo!()
+        self.cases.iter().all(|it| it.succeeded())
+        && self.suites.iter().all(|it| it.succeeded())
     }
 
     fn failed(&self) -> bool {
-        todo!()
+        !self.succeeded()
     }
 }
 
