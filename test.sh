@@ -2,4 +2,4 @@
 
 source "approvals.bash"
 
-approve "cargo run"
+approve "cargo run" && git add --all;git commit -m wip
