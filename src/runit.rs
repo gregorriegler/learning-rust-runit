@@ -146,11 +146,9 @@ impl TestSuite {
     }
 
     fn run_cases(&self) -> TestSuiteResult {
-        let mut case_results: Vec<TestCaseResult> = Vec::new();
-
-        for test in &self.tests {
-            case_results.push(test.run())
-        }
+        let case_results: Vec<TestCaseResult> = self.tests.iter()
+            .map(|it| it.run())
+            .collect();
 
         let suite_results: Vec<TestSuiteResult> = self.suites.iter()
             .map(|it| it.run_cases())
