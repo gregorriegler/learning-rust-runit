@@ -1,5 +1,4 @@
-use runit::{describe};
-use crate::runit::{it, suite};
+use crate::runit::{it, describe, suite};
 use crate::runit::assert::assert_true;
 use crate::runit::simple_print::simple_print;
 
