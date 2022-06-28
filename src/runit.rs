@@ -1,4 +1,5 @@
-use std::ops::Deref;
+pub(crate) mod simple_print;
+
 use std::panic;
 use std::process::exit;
 use crate::runit::TestResult::{Fail, Pass};
@@ -61,41 +62,6 @@ impl TestSuite {
 
 pub type PrintTestSuiteResult = fn(&TestSuiteReport) -> ();
 
-pub fn simple_print(results: &TestSuiteReport) {
-    println!();
-    print_nested(&results, "");
-    println!();
-    if results.succeeded() {
-        println!("Tests Pass!");
-    } else {
-        println!("Test Failure!");
-    }
-}
-
-fn print_nested(results: &TestSuiteReport, indent: &str) {
-    print!("{}", indent);
-    print!("{}: ", results.name);
-    if results.succeeded() {
-        println!("All Passed!");
-    } else {
-        println!("Fails!");
-    }
-
-    for suite_result in &results.suites {
-        print_nested(suite_result, (indent.to_string() + "  ").deref())
-    }
-
-    for case_result in &results.cases {
-        match case_result.result {
-            Pass => {
-                println!("  {}{}: Passes!", indent, case_result.name);
-            }
-            Fail(msg) => {
-                println!("  {}{}: Failed with reason: {}", indent, case_result.name, msg);
-            }
-        }
-    }
-}
 
 #[derive(Clone)]
 pub struct TestCase {

@@ -1,5 +1,6 @@
 use runit::{assert_true, describe};
-use crate::runit::{it, simple_print, suite};
+use crate::runit::{it, suite};
+use crate::runit::simple_print::simple_print;
 
 mod runit;
 
