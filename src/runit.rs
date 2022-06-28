@@ -27,6 +27,11 @@ pub fn it(name: &'static str, func: fn()) -> TestCase {
     }
 }
 
+trait Failable {
+    fn succeeded(&self) -> bool;
+    fn failed(&self) -> bool;
+}
+
 #[derive(Clone)]
 pub struct TestSuite {
     name: &'static str,
@@ -81,7 +86,7 @@ fn print_nested(results: &TestSuiteReport, indent: &str) {
     }
 
     for case_result in &results.cases {
-        match case_result.outcome {
+        match case_result.result {
             Pass => {
                 println!("  {}{}: Passes!", indent, case_result.name);
             }
@@ -119,26 +124,32 @@ impl TestCase {
 
 pub struct TestCaseReport {
     name: &'static str,
-    outcome: TestResult,
+    result: TestResult,
 }
 
 impl TestCaseReport {
     pub fn pass(name: &'static str) -> TestCaseReport {
         return TestCaseReport {
             name,
-            outcome: Pass,
+            result: Pass,
         };
     }
 
     pub fn fail(name: &'static str, reason: &'static str) -> TestCaseReport {
         return TestCaseReport {
             name,
-            outcome: Fail(reason),
+            result: Fail(reason),
         };
     }
+}
 
-    pub fn is_fail(&self) -> bool {
-        self.outcome.is_fail()
+impl Failable for TestCaseReport {
+    fn succeeded(&self) -> bool {
+        self.result.succeeded()
+    }
+
+    fn failed(&self) -> bool {
+        self.result.failed()
     }
 }
 
@@ -147,8 +158,16 @@ pub enum TestResult {
     Fail(&'static str),
 }
 
-impl TestResult {
-    pub fn is_fail(&self) -> bool {
+impl Failable for TestResult {
+
+    fn succeeded(&self) -> bool {
+        match *self {
+            Pass => { true }
+            Fail(_) => { false }
+        }
+    }
+
+    fn failed(&self) -> bool {
         match *self {
             Pass => { false }
             Fail(_) => { true }
@@ -163,6 +182,14 @@ pub struct TestSuiteReport {
 }
 
 impl TestSuiteReport {
+    pub fn of(name: &'static str, case_results: Vec<TestCaseReport>, suite_results: Vec<TestSuiteReport>) -> Self {
+        return Self {
+            name,
+            cases: case_results,
+            suites: suite_results,
+        };
+    }
+
     pub fn print(&self, print: PrintTestSuiteResult) -> &Self {
         print(self);
         &self
@@ -173,21 +200,11 @@ impl TestSuiteReport {
             exit(1)
         }
     }
-}
-
-impl TestSuiteReport {
-    pub fn of(name: &'static str, case_results: Vec<TestCaseReport>, suite_results: Vec<TestSuiteReport>) -> Self {
-        return Self {
-            name,
-            cases: case_results,
-            suites: suite_results,
-        };
-    }
 
     pub fn is_success(&self) -> bool {
         let mut success: bool = true;
         for result in &self.cases {
-            if result.is_fail() {
+            if result.failed() {
                 success = false
             }
         }
@@ -198,6 +215,16 @@ impl TestSuiteReport {
             }
         }
         return success;
+    }
+}
+
+impl Failable for TestSuiteReport {
+    fn succeeded(&self) -> bool {
+        todo!()
+    }
+
+    fn failed(&self) -> bool {
+        todo!()
     }
 }
 
