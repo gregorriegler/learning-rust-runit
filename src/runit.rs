@@ -43,8 +43,7 @@ impl TestSuite {
 
     pub fn run_and_print_and_exit(&self) {
         let result = self.run();
-        result.print(simple_print);
-        result.exit_on_failure();
+        result.print(simple_print).exit_on_failure();
     }
 
     fn run_cases(&self) -> Vec<TestCaseResult> {
@@ -169,8 +168,9 @@ pub struct TestSuiteResult {
 }
 
 impl TestSuiteResult {
-    pub fn print(&self, print: PrintTestSuiteResult) {
-        print(self)
+    pub fn print(&self, print: PrintTestSuiteResult) -> &Self {
+        print(self);
+        &self
     }
 
     pub fn exit_on_failure(&self) {
