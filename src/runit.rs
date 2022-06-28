@@ -23,14 +23,14 @@ pub fn describe(name: &'static str, tests: &[TestCase]) -> TestSuite {
 pub fn it(name: &'static str, func: fn()) -> TestCase {
     TestCase {
         name,
-        func
+        func,
     }
 }
 
 #[derive(Clone)]
 pub struct TestCase {
     name: &'static str,
-    func: fn()
+    func: fn(),
 }
 
 impl TestCase {
@@ -48,7 +48,7 @@ impl TestCase {
                 let static_msg = Box::leak(msg.into_boxed_str());
                 TestCaseResult::fail(self.name, static_msg)
             }
-        }
+        };
     }
 }
 
@@ -68,9 +68,9 @@ impl TestCaseOutcome {
 
 #[derive(Clone)]
 pub struct TestSuite {
-name: &'static str,
-suites: Vec<TestSuite>,
-tests: Vec<TestCase>,
+    name: &'static str,
+    suites: Vec<TestSuite>,
+    tests: Vec<TestCase>,
 }
 
 pub struct TestCaseResult {
@@ -101,7 +101,7 @@ impl TestCaseResult {
 pub struct TestSuiteResult {
     name: &'static str,
     case_results: Vec<TestCaseResult>,
-    suite_results: Vec<TestSuiteResult>
+    suite_results: Vec<TestSuiteResult>,
 }
 
 impl TestSuiteResult {
@@ -109,7 +109,7 @@ impl TestSuiteResult {
         return Self {
             name,
             case_results,
-            suite_results
+            suite_results,
         };
     }
 
@@ -151,7 +151,6 @@ impl TestSuite {
         for test in &self.tests {
             let case_result = test.run();
             case_results.push(case_result)
-
         }
 
         let suite_results: Vec<TestSuiteResult> = self.suites.iter()
