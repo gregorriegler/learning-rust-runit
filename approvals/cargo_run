@@ -1,14 +1,22 @@
    Compiling runit v0.1.0 (/home/gregor/code/learning-rust/runit)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.22s
+    Finished dev [unoptimized + debuginfo] target(s) in 0.19s
      Running `target/debug/runit`
-thread 'main' panicked at 'Expected 'true' but got 'false'', src/runit/assert.rs:7:9
+Running TestCase successful test ... Passes
+
+Running TestCase successful test ... Passes
+
+thread 'main' panicked at 'Expected 'true' but got 'false'.', src/runit/assert.rs:7:9
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Running TestCase failing test2 ... Fails with reason:
+
+--> Expected 'true' but got 'false'. 
+
 
 Outer Suite: Fails!
   Inner Suite 1: All Passed!
     successful test: Passes!
   Inner Suite 2: Fails!
     successful test: Passes!
-    failing test2: Failed with reason: Expected 'true' but got 'false'
+    failing test2: Failed with reason: Expected 'true' but got 'false'.
 
 Test Failure!

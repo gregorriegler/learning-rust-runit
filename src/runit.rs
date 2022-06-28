@@ -74,8 +74,10 @@ pub struct TestCase {
 
 impl TestCase {
     fn run(&self) -> TestCaseReport {
+        print!("Running TestCase {} ...", self.name);
         return match panic::catch_unwind(|| (self.func)()) {
             Ok(_) => {
+                println!(" Passes\n");
                 TestCaseReport::pass(self.name)
             }
             Err(e) => {
@@ -84,8 +86,11 @@ impl TestCase {
                 } else {
                     format!("?{:?}", e)
                 };
-                let static_msg = Box::leak(msg.into_boxed_str());
-                TestCaseReport::fail(self.name, static_msg)
+                let reason = Box::leak(msg.into_boxed_str());
+                println!(" Fails with reason:");
+                println!();
+                println!("--> {} \n", reason);
+                TestCaseReport::fail(self.name, reason)
             }
         };
     }
