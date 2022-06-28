@@ -41,11 +41,6 @@ impl TestSuite {
         TestSuiteResult::of(self.name, case_results, suite_results)
     }
 
-    pub fn run_and_print_and_exit(&self) {
-        let result = self.run();
-        result.print(simple_print).exit_on_failure();
-    }
-
     fn run_cases(&self) -> Vec<TestCaseResult> {
         self.tests.iter()
             .map(|it| it.run())
@@ -61,7 +56,7 @@ impl TestSuite {
 
 pub type PrintTestSuiteResult = fn(&TestSuiteResult) -> ();
 
-fn simple_print(results: &TestSuiteResult) {
+pub fn simple_print(results: &TestSuiteResult) {
     println!();
     print_nested(&results, "");
     println!();
