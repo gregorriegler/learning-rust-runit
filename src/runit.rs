@@ -35,12 +35,12 @@ pub struct TestSuite {
 }
 
 impl TestSuite {
-    pub fn run(&self) {
+    pub fn run_and_print(&self) {
         self.run_with_printer(&Self::simple_print)
     }
 
     fn run_with_printer(&self, print: &dyn Fn(&TestSuiteResult) -> ()) {
-        let result = self.run_all();
+        let result = self.run();
 
         print(&result);
 
@@ -49,7 +49,7 @@ impl TestSuite {
         }
     }
 
-    fn run_all(&self) -> TestSuiteResult {
+    fn run(&self) -> TestSuiteResult {
         let case_results: Vec<TestCaseResult> = self.run_cases();
         let suite_results: Vec<TestSuiteResult> = self.run_suites();
         TestSuiteResult::of(self.name, case_results, suite_results)
@@ -63,7 +63,7 @@ impl TestSuite {
 
     fn run_suites(&self) -> Vec<TestSuiteResult> {
         self.suites.iter()
-            .map(|it| it.run_all())
+            .map(|it| it.run())
             .collect()
     }
 
