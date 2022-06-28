@@ -1,6 +1,6 @@
 use std::ops::Deref;
 use crate::runit::{Failable, TestSuiteReport};
-use crate::runit::TestResult::{Pass,Fail};
+use crate::runit::TestResult::{Pass, Fail};
 
 pub fn simple_print(results: &TestSuiteReport) {
     println!();
