@@ -1,4 +1,5 @@
 pub(crate) mod simple_print;
+pub(crate) mod assert;
 
 use std::panic;
 use std::process::exit;
@@ -31,7 +32,7 @@ pub fn it(name: &'static str, func: fn()) -> TestCase {
 trait Failable {
     fn succeeded(&self) -> bool;
     fn failed(&self) -> bool {
-        return !self.succeeded()
+        return !self.succeeded();
     }
 }
 
@@ -138,11 +139,11 @@ pub struct TestSuiteReport {
 }
 
 impl TestSuiteReport {
-    pub fn of(name: &'static str, case_results: Vec<TestCaseReport>, suite_results: Vec<TestSuiteReport>) -> Self {
+    pub fn of(name: &'static str, cases: Vec<TestCaseReport>, suites: Vec<TestSuiteReport>) -> Self {
         return Self {
             name,
-            cases: case_results,
-            suites: suite_results,
+            cases,
+            suites,
         };
     }
 
@@ -161,16 +162,6 @@ impl TestSuiteReport {
 impl Failable for TestSuiteReport {
     fn succeeded(&self) -> bool {
         self.cases.iter().all(|it| it.succeeded())
-        && self.suites.iter().all(|it| it.succeeded())
-    }
-}
-
-pub fn assert_true(value: bool) {
-    assert_equals(value, true);
-}
-
-pub fn assert_equals(actual: bool, expected: bool) {
-    if actual != expected {
-        panic!("{}", format!("Expected '{}' but got '{}'", expected, actual))
+            && self.suites.iter().all(|it| it.succeeded())
     }
 }
