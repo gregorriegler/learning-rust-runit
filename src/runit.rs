@@ -118,9 +118,10 @@ impl TestSuite {
     fn run_cases(&self) -> TestSuiteResult {
         let mut case_results: Vec<TestCaseResult> = Vec::new();
         for (test_name, test_fn) in &self.tests {
+            let case_result;
             match panic::catch_unwind(|| test_fn()) {
                 Ok(_) => {
-                    case_results.push(TestCaseResult::pass(test_name))
+                    case_result = TestCaseResult::pass(test_name);
                 }
                 Err(e) => {
                     let msg = if let Some(msg) = e.downcast_ref::<String>() {
@@ -129,9 +130,11 @@ impl TestSuite {
                         format!("?{:?}", e)
                     };
                     let static_msg = Box::leak(msg.into_boxed_str());
-                    case_results.push(TestCaseResult::fail(test_name, static_msg))
+                    case_result = TestCaseResult::fail(test_name, static_msg);
                 }
             }
+            case_results.push(case_result)
+
         }
 
         let suite_results: Vec<TestSuiteResult> = self.suites.iter()
