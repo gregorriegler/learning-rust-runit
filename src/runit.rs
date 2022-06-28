@@ -168,10 +168,7 @@ impl Failable for TestResult {
     }
 
     fn failed(&self) -> bool {
-        match *self {
-            Pass => { false }
-            Fail(_) => { true }
-        }
+        !self.succeeded()
     }
 }
 
