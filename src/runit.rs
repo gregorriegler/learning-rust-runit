@@ -52,13 +52,6 @@ impl TestCase {
     }
 }
 
-#[derive(Clone)]
-pub struct TestSuite {
-    name: &'static str,
-    suites: Vec<TestSuite>,
-    tests: Vec<TestCase>,
-}
-
 pub enum TestCaseOutcome {
     Pass,
     Fail(&'static str),
@@ -71,6 +64,13 @@ impl TestCaseOutcome {
             Fail(_) => { true }
         }
     }
+}
+
+#[derive(Clone)]
+pub struct TestSuite {
+name: &'static str,
+suites: Vec<TestSuite>,
+tests: Vec<TestCase>,
 }
 
 pub struct TestCaseResult {
