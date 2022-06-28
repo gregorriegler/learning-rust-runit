@@ -7,10 +7,10 @@ fn main() {
     suite("Outer Suite",
           &[
               describe("Inner Suite 1", &[
-                  it("successful test", successful_test)
+                  it("successful test", || assert_true(true))
               ]),
               describe("Inner Suite 2", &[
-                  it("successful test", successful_test),
+                  it("successful test", || assert_true(true)),
                   it("failing test2", || assert_true(false)),
               ])
           ],
@@ -18,10 +18,5 @@ fn main() {
         .print(simple_print)
         .exit_on_failure();
 }
-
-fn successful_test() {
-    assert_true(true);
-}
-
 
 
