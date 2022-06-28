@@ -30,7 +30,9 @@ pub fn it(name: &'static str, func: fn()) -> TestCase {
 
 trait Failable {
     fn succeeded(&self) -> bool;
-    fn failed(&self) -> bool;
+    fn failed(&self) -> bool {
+        return !self.succeeded()
+    }
 }
 
 #[derive(Clone)]
@@ -113,10 +115,6 @@ impl Failable for TestCaseReport {
     fn succeeded(&self) -> bool {
         self.result.succeeded()
     }
-
-    fn failed(&self) -> bool {
-        self.result.failed()
-    }
 }
 
 pub enum TestResult {
@@ -125,16 +123,11 @@ pub enum TestResult {
 }
 
 impl Failable for TestResult {
-
     fn succeeded(&self) -> bool {
         match *self {
             Pass => { true }
             Fail(_) => { false }
         }
-    }
-
-    fn failed(&self) -> bool {
-        !self.succeeded()
     }
 }
 
@@ -169,10 +162,6 @@ impl Failable for TestSuiteReport {
     fn succeeded(&self) -> bool {
         self.cases.iter().all(|it| it.succeeded())
         && self.suites.iter().all(|it| it.succeeded())
-    }
-
-    fn failed(&self) -> bool {
-        !self.succeeded()
     }
 }
 
