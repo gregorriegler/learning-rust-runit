@@ -117,6 +117,7 @@ impl TestSuite {
 
     fn run_cases(&self) -> TestSuiteResult {
         let mut case_results: Vec<TestCaseResult> = Vec::new();
+
         for test in &self.tests {
             let case_result = Self::run_test_case(test);
             case_results.push(case_result)
