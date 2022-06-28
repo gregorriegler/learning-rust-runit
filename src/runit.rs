@@ -118,22 +118,7 @@ impl TestSuite {
     fn run_cases(&self) -> TestSuiteResult {
         let mut case_results: Vec<TestCaseResult> = Vec::new();
         for test in &self.tests {
-            let (test_name, test_fn) = test;
-            let case_result;
-            match panic::catch_unwind(|| test_fn()) {
-                Ok(_) => {
-                    case_result = TestCaseResult::pass(test_name);
-                }
-                Err(e) => {
-                    let msg = if let Some(msg) = e.downcast_ref::<String>() {
-                        msg.clone()
-                    } else {
-                        format!("?{:?}", e)
-                    };
-                    let static_msg = Box::leak(msg.into_boxed_str());
-                    case_result = TestCaseResult::fail(test_name, static_msg);
-                }
-            }
+            let case_result = Self::run_test_case(test);
             case_results.push(case_result)
 
         }
@@ -143,6 +128,26 @@ impl TestSuite {
             .collect();
 
         TestSuiteResult::of(self.name, case_results, suite_results)
+    }
+
+    fn run_test_case(test: &TestCase) -> TestCaseResult {
+        let (test_name, test_fn) = test;
+        let case_result;
+        match panic::catch_unwind(|| test_fn()) {
+            Ok(_) => {
+                case_result = TestCaseResult::pass(test_name);
+            }
+            Err(e) => {
+                let msg = if let Some(msg) = e.downcast_ref::<String>() {
+                    msg.clone()
+                } else {
+                    format!("?{:?}", e)
+                };
+                let static_msg = Box::leak(msg.into_boxed_str());
+                case_result = TestCaseResult::fail(test_name, static_msg);
+            }
+        }
+        case_result
     }
 
     fn simple_print(results: &TestSuiteResult) {
