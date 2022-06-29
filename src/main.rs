@@ -16,11 +16,18 @@ macro_rules! then {
     )
 }
 
+macro_rules! given {
+    ($e: stmt) => (
+        $e
+    );
+}
+
 fn main() {
     suite("Outer Suite", &[
         describe("Inner Suite 1", &[
             scenario!("successful test" => {
-                then!(equals true, true)
+                given! {let a = true}
+                then!(equals a, true)
             })
         ]),
         describe("Inner Suite 2", &[
