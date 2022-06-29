@@ -10,12 +10,6 @@ macro_rules! scenario {
     }}
 }
 
-macro_rules! then {
-    (equals $expected:expr, $actual:expr) => (
-        assert_equals($actual, $expected)
-    )
-}
-
 macro_rules! given {
     ($e: ident => $what:expr) => (let $e = $what;);
 }
@@ -26,6 +20,12 @@ macro_rules! and {
 
 macro_rules! when {
     ($e: ident => $what:expr) => (let $e = $what;);
+}
+
+macro_rules! then {
+    (equals $expected:expr, $actual:expr) => (
+        assert_equals($actual, $expected)
+    )
 }
 
 fn main() {
