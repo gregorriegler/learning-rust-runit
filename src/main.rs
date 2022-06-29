@@ -24,13 +24,18 @@ macro_rules! and {
     ($e: stmt) => ($e);
 }
 
+macro_rules! when {
+    ($e: stmt) => ($e);
+}
+
 fn main() {
     suite("Outer Suite", &[
         describe("Inner Suite 1", &[
             scenario!("successful test" => {
                 given! {let a = 1}
                 and! {let b = 1}
-                then!(equals a, b)
+                when! {let result = a+b}
+                then!(equals result, 2)
             })
         ]),
         describe("Inner Suite 2", &[
