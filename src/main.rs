@@ -7,14 +7,14 @@ mod runit;
 macro_rules! it {
     ($name:expr => $test:expr) => {{
         println!("{}", stringify!($name));
-        it($name, $test)
+        it($name, || $test)
     }}
 }
 
 fn main() {
     suite("Outer Suite", &[
         describe("Inner Suite 1", &[
-            it!("successful test" => || assert_true(true))
+            it!("successful test" => assert_true(true))
         ]),
         describe("Inner Suite 2", &[
             it("successful test",
