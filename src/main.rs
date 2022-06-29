@@ -5,7 +5,7 @@ use crate::runit::simple_print::simple_print;
 mod runit;
 
 macro_rules! scenario {
-    ($name:expr => $test:expr) => {{
+    ($name:literal => $test:expr) => {{
         it($name, || $test)
     }}
 }
@@ -22,11 +22,11 @@ macro_rules! when {
     ($e: ident => $what:expr) => (let $e = $what;);
 }
 
-macro_rules! then {
-    (equals $expected:expr, $actual:expr) => (
+macro_rules! then(
+    (equal $expected:expr, $actual:expr) => (
         assert_equals($actual, $expected)
-    )
-}
+    );
+);
 
 fn main() {
     suite("Outer Suite", &[
@@ -35,7 +35,7 @@ fn main() {
                 given! {a => 1}
                 and! {b => 2}
                 when! {result => a + b}
-                then! {equals result, 3}
+                then! {equal result, 3}
             })
         ]),
         describe("Inner Suite 2", &[
