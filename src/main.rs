@@ -25,7 +25,7 @@ macro_rules! and {
 }
 
 macro_rules! when {
-    ($e: stmt) => ($e);
+    ($e: ident => $what:expr) => (let $e = $what;);
 }
 
 fn main() {
@@ -34,7 +34,7 @@ fn main() {
             scenario!("successful test" => {
                 given! {a => 1}
                 and! {b => 2}
-                when! {let result = a + b}
+                when! {result => a + b}
                 then! {equals result, 3}
             })
         ]),
