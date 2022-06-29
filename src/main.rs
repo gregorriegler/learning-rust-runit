@@ -1,5 +1,5 @@
 use crate::runit::{it, describe, suite};
-use crate::runit::assert::assert_true;
+use crate::runit::assert::{assert_panics, assert_true};
 use crate::runit::simple_print::simple_print;
 
 mod runit;
@@ -15,7 +15,7 @@ fn main() {
         describe("Inner Suite 2", &[
             it(
                 "successful test",
-                || assert_true(true),
+                || assert_panics(|| panic!("Oh my gosh!")),
             ),
             it(
                 "failing test2",
