@@ -4,7 +4,14 @@ use crate::runit::simple_print::simple_print;
 
 mod runit;
 
+macro_rules! it {
+    ($expression:expr) => {
+        println!("{}", stringify!($expression));
+    }
+}
+
 fn main() {
+    it!("test");
     suite("Outer Suite", &[
         describe("Inner Suite 1", &[
             it("successful test",
