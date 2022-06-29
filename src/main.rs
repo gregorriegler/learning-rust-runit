@@ -20,7 +20,7 @@ fn main() {
     suite("Outer Suite", &[
         describe("Inner Suite 1", &[
             scenario!("successful test" => {
-                then!(equals 1, 1)
+                then!(equals true, true)
             })
         ]),
         describe("Inner Suite 2", &[
