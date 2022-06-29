@@ -35,7 +35,7 @@ fn main() {
                 given! {a => 1}
                 and! {b => 2}
                 when! {let result = a + b}
-                then!(equals result, 3)
+                then!{equals result, 3}
             })
         ]),
         describe("Inner Suite 2", &[
