@@ -4,9 +4,8 @@ use crate::runit::simple_print::simple_print;
 
 mod runit;
 
-macro_rules! it {
+macro_rules! scenario {
     ($name:expr => $test:expr) => {{
-        println!("{}", stringify!($name));
         it($name, || $test)
     }}
 }
@@ -14,7 +13,7 @@ macro_rules! it {
 fn main() {
     suite("Outer Suite", &[
         describe("Inner Suite 1", &[
-            it!("successful test" => {
+            scenario!("successful test" => {
                 assert_true(true)
             })
         ]),

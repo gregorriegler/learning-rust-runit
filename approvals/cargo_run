@@ -1,13 +1,12 @@
    Compiling runit v0.1.0 (/home/gregor/code/learning-rust/runit)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.19s
+    Finished dev [unoptimized + debuginfo] target(s) in 0.20s
      Running `target/debug/runit`
-"successful test"
 TestSuite Outer Suite
 TestSuite Inner Suite 1
 Running TestCase successful test ... Passes
 
 TestSuite Inner Suite 2
-thread 'main' panicked at 'Oh my gosh!', src/main.rs:21:37
+thread 'main' panicked at 'Oh my gosh!', src/main.rs:22:37
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 Running TestCase successful test ... Passes
 
