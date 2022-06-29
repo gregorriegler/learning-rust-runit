@@ -34,7 +34,7 @@ fn main() {
             scenario!("successful test" => {
                 given! {let a = 1}
                 and! {let b = 1}
-                when! {let result = a+b}
+                when! {let result = a + b}
                 then!(equals result, 2)
             })
         ]),
