@@ -33,9 +33,9 @@ fn main() {
         describe("Inner Suite 1", &[
             scenario!("successful test" => {
                 given! {let a = 1}
-                and! {let b = 1}
+                and! {let b = 2}
                 when! {let result = a + b}
-                then!(equals result, 2)
+                then!(equals result, 3)
             })
         ]),
         describe("Inner Suite 2", &[
