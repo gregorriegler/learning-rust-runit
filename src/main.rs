@@ -26,8 +26,8 @@ fn main() {
     suite("Outer Suite", &[
         describe("Inner Suite 1", &[
             scenario!("successful test" => {
-                given! {let a = true}
-                then!(equals a, true)
+                given! {let a = 1}
+                then!(equals a, 1)
             })
         ]),
         describe("Inner Suite 2", &[
