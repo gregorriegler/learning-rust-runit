@@ -4,9 +4,9 @@ pub fn assert_true(value: bool) {
     assert_equals(value, true);
 }
 
-pub fn assert_equals(actual: bool, expected: bool) {
+pub fn assert_equals<T: ToString + std::cmp::PartialEq>(actual: T, expected: T) {
     if actual != expected {
-        fail(&*format!("Expected '{}' but got '{}'.", expected, actual));
+        fail(&*format!("Expected '{}' but got '{}'.", expected.to_string(), actual.to_string()));
     }
 }
 

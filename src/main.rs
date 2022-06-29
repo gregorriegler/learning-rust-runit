@@ -1,5 +1,5 @@
 use crate::runit::{it, describe, suite};
-use crate::runit::assert::{assert_panics, assert_true};
+use crate::runit::assert::{assert_panics, assert_true, assert_equals};
 use crate::runit::simple_print::simple_print;
 
 mod runit;
@@ -10,19 +10,25 @@ macro_rules! scenario {
     }}
 }
 
+macro_rules! then {
+    (equals $expected:expr, $actual:expr) => (
+        assert_equals($actual, $expected)
+    )
+}
+
 fn main() {
     suite("Outer Suite", &[
         describe("Inner Suite 1", &[
             scenario!("successful test" => {
-                assert_true(true)
+                then!(equals 1, 1)
             })
         ]),
         describe("Inner Suite 2", &[
             it("successful test",
-                || assert_panics(|| panic!("Oh my gosh!")),
+               || assert_panics(|| panic!("Oh my gosh!")),
             ),
             it("failing test2",
-                || assert_true(false),
+               || assert_true(false),
             ),
         ])
     ],
