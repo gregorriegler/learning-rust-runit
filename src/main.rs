@@ -7,18 +7,15 @@ mod runit;
 fn main() {
     suite("Outer Suite", &[
         describe("Inner Suite 1", &[
-            it(
-                "successful test",
+            it("successful test",
                 || assert_true(true),
             )
         ]),
         describe("Inner Suite 2", &[
-            it(
-                "successful test",
+            it("successful test",
                 || assert_panics(|| panic!("Oh my gosh!")),
             ),
-            it(
-                "failing test2",
+            it("failing test2",
                 || assert_true(false),
             ),
         ])
