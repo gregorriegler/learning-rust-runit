@@ -17,9 +17,11 @@ macro_rules! then {
 }
 
 macro_rules! given {
-    ($e: stmt) => (
-        $e
-    );
+    ($e: stmt) => ($e);
+}
+
+macro_rules! and {
+    ($e: stmt) => ($e);
 }
 
 fn main() {
@@ -27,7 +29,8 @@ fn main() {
         describe("Inner Suite 1", &[
             scenario!("successful test" => {
                 given! {let a = 1}
-                then!(equals a, 1)
+                and! {let b = 1}
+                then!(equals a, b)
             })
         ]),
         describe("Inner Suite 2", &[
