@@ -5,8 +5,10 @@ TestSuite Outer Suite
 TestSuite Inner Suite 1
 Running TestCase successful test ... Passes
 
+Running TestCase another one ... Passes
+
 TestSuite Inner Suite 2
-thread 'main' panicked at 'Oh my gosh!', src/main.rs:22:37
+thread 'main' panicked at 'Oh my gosh!', src/main.rs:51:36
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 Running TestCase successful test ... Passes
 
@@ -19,6 +21,7 @@ Running TestCase failing test2 ... Fails with reason:
 Outer Suite: Fails!
   Inner Suite 1: All Passed!
     successful test: Passes!
+    another one: Passes!
   Inner Suite 2: Fails!
     successful test: Passes!
     failing test2: Failed with reason: Expected 'true' but got 'false'.
