@@ -1,21 +1,11 @@
-   Compiling runit v0.1.0 (/home/gregor/code/learning-rust/runit)
-warning: unused macro definition: `Feature`
- --> src/main.rs:7:14
-  |
-7 | macro_rules! Feature {
-  |              ^^^^^^^
-  |
-  = note: `#[warn(unused_macros)]` on by default
-
-warning: `runit` (bin "runit") generated 1 warning
-    Finished dev [unoptimized + debuginfo] target(s) in 0.20s
+    Finished dev [unoptimized + debuginfo] target(s) in 0.00s
      Running `target/debug/runit`
 TestSuite Outer Suite
 TestSuite Inner Suite 1
 Running TestCase successful test ... Passes
 
 TestSuite Inner Suite 2
-thread 'main' panicked at 'Oh my gosh!', src/main.rs:57:36
+thread 'main' panicked at 'Oh my gosh!', src/main.rs:58:36
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 Running TestCase successful test ... Passes
 
