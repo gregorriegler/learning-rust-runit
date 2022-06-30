@@ -11,23 +11,23 @@ macro_rules! scenario {
 }
 
 macro_rules! given {
-    ($e: ident = $what:expr) => (let $e = $what;);
+    ($name: ident = $what:expr) => (let $name = $what;);
 }
 
 macro_rules! and {
-    ($e: ident = $what:expr) => (given!($e = $what))
+    ($name: ident = $what:expr) => (given!($name = $what))
 }
 
 macro_rules! when {
-    ($e: ident = $what:expr) => (let $e = $what;);
+    ($name: ident = $what:expr) => (let $name = $what;);
 }
 
 macro_rules! then (
-    ($expected:ident equals $actual:ident) => (
-        assert_equals($actual, $expected)
+    ($name:ident equals $actual:ident) => (
+        assert_equals($actual, $name)
     );
-    ($expected:ident equals $actual:literal) => (
-        assert_equals($actual, $expected)
+    ($name:ident equals $actual:literal) => (
+        assert_equals($actual, $name)
     );
 );
 
