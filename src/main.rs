@@ -5,8 +5,8 @@ use crate::runit::simple_print::simple_print;
 mod runit;
 
 macro_rules! feature {
-    ($name:literal => $feat:expr) => {{
-        describe($name, &[$feat])
+    ($name:literal => $($feat:expr)*) => {{
+        describe($name, &[$($feat)*])
     }}
 }
 
