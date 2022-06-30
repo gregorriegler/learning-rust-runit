@@ -10,7 +10,7 @@ macro_rules! Feature {
     }}
 }
 
-macro_rules! scenario {
+macro_rules! Scenario {
     ($name:literal => $test:expr) => {{
         it($name, || $test)
     }}
@@ -40,13 +40,13 @@ macro_rules! then (
 fn main() {
     suite("Outer Suite", &[
         Feature!("Inner Suite 1" => {
-            scenario!("successful test" => {
+            Scenario!("successful test" => {
                 given! (a = 1);
                 and! (b = 2);
                 when! (result = a + b);
                 then! (result equals 3)
             });
-            scenario!("another one" => {
+            Scenario!("another one" => {
                 given! (a = 1);
                 and! (b = 1);
                 then! (a equals b)
