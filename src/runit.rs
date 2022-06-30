@@ -105,6 +105,39 @@ impl TestCase for SimpleTestCase {
     }
 }
 
+#[derive(Clone)]
+pub struct UnaryU32TestCase {
+    name: &'static str,
+    func: fn(a: u32),
+    args: Vec<u32>,
+}
+
+impl TestCase for UnaryU32TestCase {
+    fn run(&self) -> Vec<TestCaseReport> {
+        print!("Running TestCase {} ...", self.name);
+        return self.args.iter().map(|x| {
+            match panic::catch_unwind(|| (self.func)(*x)) {
+                Ok(_) => {
+                    println!(" Passes\n");
+                    TestCaseReport::pass(self.name)
+                }
+                Err(e) => {
+                    let msg = if let Some(msg) = e.downcast_ref::<String>() {
+                        msg.clone()
+                    } else {
+                        format!("?{:?}", e)
+                    };
+                    let reason = Box::leak(msg.into_boxed_str());
+                    println!(" Fails with reason:");
+                    println!();
+                    println!("--> {} \n", reason);
+                    TestCaseReport::fail(self.name, reason)
+                }
+            }
+        }).collect();
+    }
+}
+
 pub struct TestCaseReport {
     name: &'static str,
     result: TestResult,
