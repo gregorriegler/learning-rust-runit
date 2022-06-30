@@ -16,7 +16,7 @@ pub fn suite(name: &'static str, suites: Vec<TestSuite>) -> TestSuite {
     }
 }
 
-pub fn describe(name: &'static str, tests: Vec<Box<dyn TestCaseRun>>) -> TestSuite {
+pub fn describe(name: &'static str, tests: Vec<Box<dyn TestCase>>) -> TestSuite {
     TestSuite {
         name,
         suites: vec![],
@@ -24,8 +24,8 @@ pub fn describe(name: &'static str, tests: Vec<Box<dyn TestCaseRun>>) -> TestSui
     }
 }
 
-pub fn it(name: &'static str, func: fn()) -> Box<dyn TestCaseRun> {
-    Box::new(TestCase {
+pub fn it(name: &'static str, func: fn()) -> Box<dyn TestCase> {
+    Box::new(SimpleTestCase {
         name,
         func,
         // args: Vec::new(),
@@ -42,7 +42,7 @@ trait Failable {
 pub struct TestSuite {
     name: &'static str,
     suites: Vec<TestSuite>,
-    tests: Vec<Box<dyn TestCaseRun>>,
+    tests: Vec<Box<dyn TestCase>>,
 }
 
 impl TestSuite {
@@ -69,18 +69,18 @@ impl TestSuite {
 pub type PrintTestSuiteResult = fn(&TestSuiteReport) -> ();
 
 
-pub trait TestCaseRun {
+pub trait TestCase {
     fn run(&self) -> Vec<TestCaseReport>;
 }
 
 #[derive(Clone)]
-pub struct TestCase {
+pub struct SimpleTestCase {
     name: &'static str,
     func: fn(),
     // args: Vec<u32>,
 }
 
-impl TestCaseRun for TestCase {
+impl TestCase for SimpleTestCase {
     fn run(&self) -> Vec<TestCaseReport> {
         print!("Running TestCase {} ...", self.name);
         let report = match panic::catch_unwind(|| (self.func)()) {
