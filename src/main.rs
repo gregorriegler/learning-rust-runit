@@ -4,7 +4,7 @@ use crate::runit::simple_print::simple_print;
 
 mod runit;
 
-macro_rules! feature {
+macro_rules! Feature {
     ($name:literal => $($feat:expr)*) => {{
         describe($name, &[$($feat)*])
     }}
@@ -39,7 +39,7 @@ macro_rules! then (
 
 fn main() {
     suite("Outer Suite", &[
-        feature!("Inner Suite 1" => {
+        Feature!("Inner Suite 1" => {
             scenario!("successful test" => {
                 given! (a = 1);
                 and! (b = 2);
@@ -51,8 +51,7 @@ fn main() {
                 and! (b = 1);
                 then! (a equals b)
             })
-        })
-        ,
+        }),
         describe("Inner Suite 2", &[
             it("successful test",
                || assert_panics(|| panic!("Oh my gosh!")),
