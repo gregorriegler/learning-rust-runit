@@ -19,7 +19,7 @@ macro_rules! and {
 }
 
 macro_rules! when {
-    ($e: ident => $what:expr) => (let $e = $what;);
+    ($e: ident = $what:expr) => (let $e = $what;);
 }
 
 macro_rules! then (
@@ -37,7 +37,7 @@ fn main() {
             scenario!("successful test" => {
                 given! (a = 1);
                 and! (b = 2);
-                when! (result => a + b);
+                when! (result = a + b);
                 then! (result equals 3)
             }),
             scenario!("another one" => {
