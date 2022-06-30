@@ -11,11 +11,11 @@ macro_rules! scenario {
 }
 
 macro_rules! given {
-    ($e: ident => $what:expr) => (let $e = $what;);
+    ($e: ident = $what:expr) => (let $e = $what;);
 }
 
 macro_rules! and {
-    ($e: ident => $what:expr) => (given!($e => $what))
+    ($e: ident = $what:expr) => (given!($e = $what))
 }
 
 macro_rules! when {
@@ -35,14 +35,14 @@ fn main() {
     suite("Outer Suite", &[
         describe("Inner Suite 1", &[
             scenario!("successful test" => {
-                given! (a => 1);
-                and! (b => 2);
+                given! (a = 1);
+                and! (b = 2);
                 when! (result => a + b);
                 then! (result equals 3)
             }),
             scenario!("another one" => {
-                given! (a => 1);
-                and! (b => 1);
+                given! (a = 1);
+                and! (b = 1);
                 then! (a equals b)
             })
         ]),
