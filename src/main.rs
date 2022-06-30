@@ -1,4 +1,4 @@
-use crate::runit::{describe, it, suite};
+use crate::runit::{describe, it, pit, suite};
 use crate::runit::assert::{assert_equals, assert_panics, assert_true};
 use crate::runit::simple_print::simple_print;
 
@@ -26,9 +26,9 @@ fn main() {
             it("failing test2",
                || assert_true(false),
             ),
-            // it("parameterized test",
-            //    |a| assert_equals(a, 1),
-            // ),
+            pit("parameterized test",
+               |a| assert_equals(a, 1),
+            ),
         ])
     ],
     ).run()

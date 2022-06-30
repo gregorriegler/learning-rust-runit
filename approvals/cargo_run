@@ -1,4 +1,5 @@
-    Finished dev [unoptimized + debuginfo] target(s) in 0.00s
+   Compiling runit v0.1.0 (/home/gregor/code/learning-rust/runit)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.24s
      Running `target/debug/runit`
 TestSuite Outer Suite
 TestSuite Inner Suite 1
@@ -14,7 +15,7 @@ Running TestCase failing test2 ... Fails with reason:
 
 --> Expected 'true' but got 'false'. 
 
-
+Running TestCase parameterized test ...
 Outer Suite: Fails!
   Inner Suite 1: All Passed!
     another one: Passes!

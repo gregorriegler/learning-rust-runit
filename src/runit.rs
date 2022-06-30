@@ -32,6 +32,14 @@ pub fn it(name: &'static str, func: fn()) -> Box<dyn TestCase> {
     })
 }
 
+pub fn pit(name: &'static str, func: fn(u32)) -> Box<dyn TestCase> {
+    Box::new(UnaryU32TestCase {
+        name,
+        func,
+        args: Vec::new(),
+    })
+}
+
 trait Failable {
     fn succeeded(&self) -> bool;
     fn failed(&self) -> bool {
