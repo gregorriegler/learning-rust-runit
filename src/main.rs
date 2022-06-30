@@ -23,7 +23,7 @@ macro_rules! when {
 }
 
 macro_rules! then (
-    ($expected:ident equal $actual:literal) => (
+    ($expected:ident equals $actual:literal) => (
         assert_equals($actual, $expected)
     );
 );
@@ -35,7 +35,7 @@ fn main() {
                 given! (a => 1);
                 and! (b => 2);
                 when! (result => a + b);
-                then! (result equal 3);
+                then! (result equals 3);
             })
         ]),
         describe("Inner Suite 2", &[
