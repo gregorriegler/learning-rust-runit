@@ -1,5 +1,5 @@
-use crate::runit::{it, describe, suite};
-use crate::runit::assert::{assert_panics, assert_true, assert_equals};
+use crate::runit::{describe, it, suite};
+use crate::runit::assert::{assert_equals, assert_panics, assert_true};
 use crate::runit::simple_print::simple_print;
 
 mod runit;
@@ -45,13 +45,13 @@ fn main() {
                 and! (b = 2);
                 when! (result = a + b);
                 then! (result equals 3)
+            });
+            scenario!("another one" => {
+                given! (a = 1);
+                and! (b = 1);
+                then! (a equals b)
             })
         })
-        // scenario!("another one" => {
-        //     given! (a = 1);
-        //     and! (b = 1);
-        //     then! (a equals b)
-        // })
         ,
         describe("Inner Suite 2", &[
             it("successful test",
