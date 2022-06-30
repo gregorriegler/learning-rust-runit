@@ -20,7 +20,7 @@ macro_rules! Given {
     ($name: ident = $what:expr) => (let $name = $what;);
 }
 
-macro_rules! and {
+macro_rules! And {
     ($name: ident = $what:expr) => (Given!($name = $what))
 }
 
@@ -42,13 +42,13 @@ fn main() {
         Feature!("Inner Suite 1" => {
             Scenario!("successful test" => {
                 Given! (a = 1);
-                and! (b = 2);
+                And! (b = 2);
                 when! (result = a + b);
                 then! (result equals 3)
             });
             Scenario!("another one" => {
                 Given! (a = 1);
-                and! (b = 1);
+                And! (b = 1);
                 then! (a equals b)
             })
         }),
