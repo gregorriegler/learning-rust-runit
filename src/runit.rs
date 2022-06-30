@@ -55,7 +55,7 @@ impl TestSuite {
 
     fn run_cases(&self) -> Vec<TestCaseReport> {
         self.tests.iter()
-            .map(|it| it.run())
+            .flat_map(|it| it.run())
             .collect()
     }
 
@@ -76,9 +76,9 @@ pub struct TestCase {
 }
 
 impl TestCase {
-    fn run(&self) -> TestCaseReport {
+    fn run(&self) -> Vec<TestCaseReport> {
         print!("Running TestCase {} ...", self.name);
-        return match panic::catch_unwind(|| (self.func)()) {
+        let report = match panic::catch_unwind(|| (self.func)()) {
             Ok(_) => {
                 println!(" Passes\n");
                 TestCaseReport::pass(self.name)
@@ -96,6 +96,7 @@ impl TestCase {
                 TestCaseReport::fail(self.name, reason)
             }
         };
+        return vec!(report);
     }
 }
 
