@@ -1,5 +1,5 @@
    Compiling runit v0.1.0 (/home/gregor/code/learning-rust/runit)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.24s
+    Finished dev [unoptimized + debuginfo] target(s) in 0.23s
      Running `target/debug/runit`
 TestSuite Outer Suite
 TestSuite Inner Suite 1
@@ -15,12 +15,22 @@ Running TestCase failing test2 ... Fails with reason:
 
 --> Expected 'true' but got 'false'. 
 
-Running TestCase parameterized test ...
+Running TestCase parameterized test
+ for 1 ... Passes
+
+thread 'main' panicked at 'Expected '1' but got '2'.', src/runit/assert.rs:23:5
+ for 2 ... Fails with reason:
+
+--> Expected '1' but got '2'. 
+
+
 Outer Suite: Fails!
   Inner Suite 1: All Passed!
     another one: Passes!
   Inner Suite 2: Fails!
     successful test: Passes!
     failing test2: Failed with reason: Expected 'true' but got 'false'.
+    parameterized test: Passes!
+    parameterized test: Failed with reason: Expected '1' but got '2'.
 
 Test Failure!

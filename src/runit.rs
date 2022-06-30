@@ -32,11 +32,11 @@ pub fn it(name: &'static str, func: fn()) -> Box<dyn TestCase> {
     })
 }
 
-pub fn pit(name: &'static str, func: fn(u32)) -> Box<dyn TestCase> {
+pub fn pit(name: &'static str, func: fn(u32), args: Vec<u32>) -> Box<dyn TestCase> {
     Box::new(UnaryU32TestCase {
         name,
         func,
-        args: Vec::new(),
+        args,
     })
 }
 
@@ -122,8 +122,9 @@ pub struct UnaryU32TestCase {
 
 impl TestCase for UnaryU32TestCase {
     fn run(&self) -> Vec<TestCaseReport> {
-        print!("Running TestCase {} ...", self.name);
+        println!("Running TestCase {}", self.name);
         return self.args.iter().map(|x| {
+            print!(" for {} ...", x);
             match panic::catch_unwind(|| (self.func)(*x)) {
                 Ok(_) => {
                     println!(" Passes\n");

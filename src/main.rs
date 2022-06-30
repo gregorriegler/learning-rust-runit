@@ -28,6 +28,7 @@ fn main() {
             ),
             pit("parameterized test",
                |a| assert_equals(a, 1),
+                vec![1,2]
             ),
         ])
     ],
