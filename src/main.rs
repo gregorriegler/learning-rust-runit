@@ -4,6 +4,12 @@ use crate::runit::simple_print::simple_print;
 
 mod runit;
 
+macro_rules! Feature {
+    ($name:literal => $test:expr) => {{
+        describe($name, || $test)
+    }}
+}
+
 macro_rules! scenario {
     ($name:literal => $test:expr) => {{
         it($name, || $test)
@@ -40,11 +46,11 @@ fn main() {
                 when! (result = a + b);
                 then! (result equals 3)
             }),
-            scenario!("another one" => {
-                given! (a = 1);
-                and! (b = 1);
-                then! (a equals b)
-            })
+            // scenario!("another one" => {
+            //     given! (a = 1);
+            //     and! (b = 1);
+            //     then! (a equals b)
+            // })
         ]),
         describe("Inner Suite 2", &[
             it("successful test",
