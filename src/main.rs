@@ -16,12 +16,12 @@ macro_rules! Scenario {
     }}
 }
 
-macro_rules! given {
+macro_rules! Given {
     ($name: ident = $what:expr) => (let $name = $what;);
 }
 
 macro_rules! and {
-    ($name: ident = $what:expr) => (given!($name = $what))
+    ($name: ident = $what:expr) => (Given!($name = $what))
 }
 
 macro_rules! when {
@@ -41,13 +41,13 @@ fn main() {
     suite("Outer Suite", &[
         Feature!("Inner Suite 1" => {
             Scenario!("successful test" => {
-                given! (a = 1);
+                Given! (a = 1);
                 and! (b = 2);
                 when! (result = a + b);
                 then! (result equals 3)
             });
             Scenario!("another one" => {
-                given! (a = 1);
+                Given! (a = 1);
                 and! (b = 1);
                 then! (a equals b)
             })
