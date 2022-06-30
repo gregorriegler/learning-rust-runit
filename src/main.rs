@@ -22,17 +22,11 @@ macro_rules! when {
     ($e: ident => $what:expr) => (let $e = $what;);
 }
 
-macro_rules! then2(
+macro_rules! then (
     ($expected:ident equal $actual:literal) => (
         assert_equals($actual, $expected)
     );
 );
-
-// macro_rules! then(
-//     (equal $expected:expr, $actual:expr) => (
-//         assert_equals($actual, $expected)
-//     );
-// );
 
 fn main() {
     suite("Outer Suite", &[
@@ -41,7 +35,7 @@ fn main() {
                 given! (a => 1);
                 and! (b => 2);
                 when! (result => a + b);
-                then2! (result equal 3);
+                then! (result equal 3);
             })
         ]),
         describe("Inner Suite 2", &[
