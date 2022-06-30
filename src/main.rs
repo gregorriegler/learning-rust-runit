@@ -38,7 +38,7 @@ fn main() {
                 given! (a => 1);
                 and! (b => 2);
                 when! (result => a + b);
-                then! (result equals 3);
+                then! (result equals 3)
             }),
             scenario!("another one" => {
                 given! (a => 1);
