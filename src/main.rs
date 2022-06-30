@@ -24,7 +24,7 @@ macro_rules! And {
     ($name: ident = $what:expr) => (Given!($name = $what))
 }
 
-macro_rules! when {
+macro_rules! When {
     ($name: ident = $what:expr) => (let $name = $what;);
 }
 
@@ -43,7 +43,7 @@ fn main() {
             Scenario!("successful test" => {
                 Given! (a = 1);
                 And! (b = 2);
-                when! (result = a + b);
+                When! (result = a + b);
                 then! (result equals 3)
             });
             Scenario!("another one" => {
