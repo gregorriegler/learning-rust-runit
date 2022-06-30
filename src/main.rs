@@ -23,11 +23,11 @@ macro_rules! when {
 }
 
 macro_rules! then (
-    ($name:ident equals $actual:ident) => (
-        assert_equals($actual, $name)
+    ($expected:ident equals $actual:ident) => (
+        assert_equals($actual, $expected)
     );
-    ($name:ident equals $actual:literal) => (
-        assert_equals($actual, $name)
+    ($expected:ident equals $actual:literal) => (
+        assert_equals($actual, $expected)
     );
 );
 
