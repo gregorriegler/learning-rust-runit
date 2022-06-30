@@ -1,12 +1,27 @@
    Compiling runit v0.1.0 (/home/gregor/code/learning-rust/runit)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.21s
+warning: field is never read: `args`
+  --> src/runit.rs:77:5
+   |
+77 |     args: Vec<u32>,
+   |     ^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` on by default
+note: `TestCase` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+  --> src/runit.rs:73:10
+   |
+73 | #[derive(Clone)]
+   |          ^^^^^
+   = note: this warning originates in the derive macro `Clone` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: `runit` (bin "runit") generated 1 warning
+    Finished dev [unoptimized + debuginfo] target(s) in 0.25s
      Running `target/debug/runit`
 TestSuite Outer Suite
 TestSuite Inner Suite 1
 Running TestCase another one ... Passes
 
 TestSuite Inner Suite 2
-thread 'main' panicked at 'Oh my gosh!', src/main.rs:58:36
+thread 'main' panicked at 'Oh my gosh!', src/main.rs:24:36
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 Running TestCase successful test ... Passes
 

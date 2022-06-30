@@ -28,6 +28,7 @@ pub fn it(name: &'static str, func: fn()) -> TestCase {
     TestCase {
         name,
         func,
+        args: Vec::new(),
     }
 }
 
@@ -73,6 +74,7 @@ pub type PrintTestSuiteResult = fn(&TestSuiteReport) -> ();
 pub struct TestCase {
     name: &'static str,
     func: fn(),
+    args: Vec<u32>,
 }
 
 impl TestCase {

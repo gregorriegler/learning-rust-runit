@@ -26,6 +26,9 @@ fn main() {
             it("failing test2",
                || assert_true(false),
             ),
+            // it("parameterized test",
+            //    |a| assert_equals(a, 1),
+            // ),
         ])
     ],
     ).run()
