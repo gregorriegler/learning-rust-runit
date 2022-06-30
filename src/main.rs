@@ -28,7 +28,7 @@ macro_rules! When {
     ($name: ident = $what:expr) => (let $name = $what;);
 }
 
-macro_rules! then (
+macro_rules! Then (
     ($expected:ident equals $actual:ident) => (
         assert_equals($actual, $expected)
     );
@@ -44,12 +44,12 @@ fn main() {
                 Given! (a = 1);
                 And! (b = 2);
                 When! (result = a + b);
-                then! (result equals 3)
+                Then! (result equals 3)
             });
             Scenario!("another one" => {
                 Given! (a = 1);
                 And! (b = 1);
-                then! (a equals b)
+                Then! (a equals b)
             })
         }),
         describe("Inner Suite 2", &[
