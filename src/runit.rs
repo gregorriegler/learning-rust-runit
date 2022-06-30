@@ -70,6 +70,10 @@ impl TestSuite {
 pub type PrintTestSuiteResult = fn(&TestSuiteReport) -> ();
 
 
+trait TestCaseRun {
+    fn run(&self) -> Vec<TestCaseReport>;
+}
+
 #[derive(Clone)]
 pub struct TestCase {
     name: &'static str,
@@ -77,7 +81,7 @@ pub struct TestCase {
     args: Vec<u32>,
 }
 
-impl TestCase {
+impl TestCaseRun for TestCase {
     fn run(&self) -> Vec<TestCaseReport> {
         print!("Running TestCase {} ...", self.name);
         let report = match panic::catch_unwind(|| (self.func)()) {
