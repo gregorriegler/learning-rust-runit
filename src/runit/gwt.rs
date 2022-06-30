@@ -13,6 +13,13 @@ macro_rules! Scenario {
 }
 
 #[macro_export]
+macro_rules! ScenarioOutline {
+    ($name:literal => $test:expr; $($examples:expr)*) => {{
+        it($name, || $test)
+    }}
+}
+
+#[macro_export]
 macro_rules! Given {
     ($name: ident = $what:expr) => (let $name = $what;);
 }
