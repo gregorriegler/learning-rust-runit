@@ -5,7 +5,7 @@ use crate::runit::simple_print::simple_print;
 mod runit;
 
 fn main() {
-    suite("Outer Suite", &[
+    suite("Outer Suite", vec![
         Feature!("Inner Suite 1" => {
             Scenario!("successful test" => {
                 Given! (a = 1);
@@ -19,7 +19,7 @@ fn main() {
                 Then! (a equals b)
             })
         }),
-        describe("Inner Suite 2", &[
+        describe("Inner Suite 2", vec![
             it("successful test",
                || assert_panics(|| panic!("Oh my gosh!")),
             ),

@@ -1,7 +1,7 @@
 #[macro_export]
 macro_rules! Feature {
     ($name:literal => $($feat:expr)*) => {{
-        describe($name, &[$($feat)*])
+        describe($name, vec![$($feat)*])
     }}
 }
 

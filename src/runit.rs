@@ -8,28 +8,28 @@ use std::process::exit;
 use crate::runit::TestResult::{Fail, Pass};
 
 
-pub fn suite(name: &'static str, suites: &[TestSuite]) -> TestSuite {
+pub fn suite(name: &'static str, suites: Vec<TestSuite>) -> TestSuite {
     TestSuite {
         name,
-        suites: suites.to_vec(),
+        suites,
         tests: vec![],
     }
 }
 
-pub fn describe(name: &'static str, tests: &[TestCase]) -> TestSuite {
+pub fn describe(name: &'static str, tests: Vec<Box<dyn TestCaseRun>>) -> TestSuite {
     TestSuite {
         name,
         suites: vec![],
-        tests: tests.to_vec(),
+        tests,
     }
 }
 
-pub fn it(name: &'static str, func: fn()) -> TestCase {
-    TestCase {
+pub fn it(name: &'static str, func: fn()) -> Box<dyn TestCaseRun> {
+    Box::new(TestCase {
         name,
         func,
-        args: Vec::new(),
-    }
+        // args: Vec::new(),
+    })
 }
 
 trait Failable {
@@ -39,11 +39,10 @@ trait Failable {
     }
 }
 
-#[derive(Clone)]
 pub struct TestSuite {
     name: &'static str,
     suites: Vec<TestSuite>,
-    tests: Vec<TestCase>,
+    tests: Vec<Box<dyn TestCaseRun>>,
 }
 
 impl TestSuite {
@@ -70,7 +69,7 @@ impl TestSuite {
 pub type PrintTestSuiteResult = fn(&TestSuiteReport) -> ();
 
 
-trait TestCaseRun {
+pub trait TestCaseRun {
     fn run(&self) -> Vec<TestCaseReport>;
 }
 
@@ -78,7 +77,7 @@ trait TestCaseRun {
 pub struct TestCase {
     name: &'static str,
     func: fn(),
-    args: Vec<u32>,
+    // args: Vec<u32>,
 }
 
 impl TestCaseRun for TestCase {
